@@ -1,37 +1,37 @@
-[gd_scene load_steps=4 format=3 uid="uid://r1aky7cefhey"]
+[gd_scene load_steps=4 format=3 uid="uid://b266q2tq83y1"]
 
-[ext_resource type="Script" uid="uid://cmfp76oobbbsm" path="res://simulation.gd" id="1_wpwoq"]
-[ext_resource type="Script" uid="uid://ccrn3wpw6p6n1" path="res://ligne.gd" id="3_wpwoq"]
-[ext_resource type="Script" uid="uid://bv8n36mfk6mqg" path="res://fps.gd" id="4_wpwoq"]
+[ext_resource type="Script" uid="uid://cb7qkt38vuqi8" path="res://scripts/simulation.gd" id="1_ik8a0"]
+[ext_resource type="Script" uid="uid://docgtmjj4ffx7" path="res://scripts/ligne.gd" id="2_ljsjv"]
+[ext_resource type="Script" uid="uid://bmbqd44nsionn" path="res://scripts/fps.gd" id="3_mwrr7"]
 
 [node name="Simulation" type="Node2D"]
-script = ExtResource("1_wpwoq")
+script = ExtResource("1_ik8a0")
 
 [node name="Haut" type="Line2D" parent="."]
 points = PackedVector2Array(0, 0, 1280, 0)
 width = 1.0
 default_color = Color(0, 0, 0, 1)
-script = ExtResource("3_wpwoq")
+script = ExtResource("2_ljsjv")
 
 [node name="Bas" type="Line2D" parent="."]
 points = PackedVector2Array(0, 720, 1280, 720)
 width = 1.0
 default_color = Color(0, 0, 0, 1)
-script = ExtResource("3_wpwoq")
+script = ExtResource("2_ljsjv")
 
 [node name="Gauche" type="Line2D" parent="."]
 points = PackedVector2Array(0, 0, 0, 720)
 width = 1.0
 default_color = Color(0, 0, 0, 1)
-script = ExtResource("3_wpwoq")
+script = ExtResource("2_ljsjv")
 
 [node name="Droite" type="Line2D" parent="."]
 points = PackedVector2Array(1280, 0, 1280, 720)
 width = 1.0
 default_color = Color(0, 0, 0, 1)
-script = ExtResource("3_wpwoq")
+script = ExtResource("2_ljsjv")
 
 [node name="Label" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
-script = ExtResource("4_wpwoq")
+script = ExtResource("3_mwrr7")
