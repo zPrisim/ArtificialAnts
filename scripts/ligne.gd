@@ -7,7 +7,6 @@ func _ready():
 	segment.a = points.get(0) 
 	segment.b = points.get(1) 
 	hitBox.shape = segment
-	
 
 	var body = StaticBody2D.new()
 	body.add_child(hitBox)

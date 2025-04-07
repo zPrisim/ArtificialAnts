@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://dofy51hmfv30v"]
+[gd_scene load_steps=6 format=3 uid="uid://dofy51hmfv30v"]
 
 [ext_resource type="Script" uid="uid://sjew7gcdmvx4" path="res://scripts/ant_movement.gd" id="1_5tacl"]
 [ext_resource type="Texture2D" uid="uid://cci2wnk0ctvom" path="res://assets/images/ant-black.png" id="2_q4ieg"]
+[ext_resource type="Script" uid="uid://x8738j3ao3o5" path="res://scripts/antLabel.gd" id="3_acg2n"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_4guct"]
 animations = [{
@@ -19,7 +20,7 @@ radius = 4.0
 height = 10.0
 
 [node name="ant" type="CharacterBody2D"]
-collision_layer = 0
+collision_layer = 2
 script = ExtResource("1_5tacl")
 
 [node name="antSprite" type="AnimatedSprite2D" parent="."]
@@ -49,3 +50,11 @@ hit_from_inside = true
 position = Vector2(75, 81)
 target_position = Vector2(3, -3)
 hit_from_inside = true
+
+[node name="Label" type="Label" parent="."]
+visible = false
+offset_left = 67.0
+offset_top = 71.0
+offset_right = 81.0
+offset_bottom = 94.0
+script = ExtResource("3_acg2n")

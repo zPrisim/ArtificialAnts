@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://ckbpa1enbjyvg"]
+
+[ext_resource type="Script" uid="uid://b6atvopwnk0qn" path="res://scripts/food.gd" id="1_xven1"]
+[ext_resource type="Script" uid="uid://bxhph7vrkcik8" path="res://scripts/food_size.gd" id="2_af40f"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_af40f"]
+
+[node name="food" type="Area2D"]
+collision_mask = 3
+script = ExtResource("1_xven1")
+
+[node name="foodCollision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_af40f")
+
+[node name="foodSize" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -11.5
+offset_right = 0.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_af40f")
