@@ -1,26 +1,23 @@
 extends Node2D
-var ant = preload("res://scenes/ant.tscn")
-var food = preload("res://scenes/food.tscn")
+@onready var ant = preload("res://scenes/ant.tscn")
+@onready var food = preload("res://scenes/food.tscn")
+@onready var antHill = $antHill
 var homePheromones : Array 
 var foodPheromones : Array 
 var ants : Array
-@onready var anthill = $anthill
-
 
 func _ready():
 	
-	anthill.monitoring = true
+	antHill.position = Vector2(640,360)
 	var instFood = food.instantiate()
 	instFood.radius = 50.0
-	instFood.pos = Vector2(500,500)
+	instFood.position = Vector2(500,500)
 	add_child(instFood)
-
 	
-	
-	for i in range (0,30):
+	for i in range (0,200):
 		var instAnt = ant.instantiate()
 		instAnt.id = i 
-		instAnt.position = anthill.position
+		instAnt.position = antHill.position
 		add_child(instAnt)
 		ants.append(instAnt)
 	

@@ -4,6 +4,7 @@ extends Area2D
 
 func _ready():
 	antHillCollision.shape.radius = 25
+	monitoring = true
 
 func _draw():
-	draw_circle(Vector2(get_parent().position.x,get_parent().position.y),antHillCollision.shape.radius,Color.BLUE,true)
+	draw_circle(Vector2(0,0),antHillCollision.shape.radius,Color.BLUE,true)

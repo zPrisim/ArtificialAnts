@@ -2,21 +2,23 @@ extends Area2D
 @onready var foodCollision = $foodCollision
 
 var radius : float
-var pos : Vector2
+var foodValue : float
+var foodRatio : float = 100
 
 func _ready():
 	monitoring = true
 	foodCollision.shape.radius = radius
-	position = pos
+	foodValue = radius * foodRatio
 
 
 func _physics_process(_delta):
-	if foodCollision.shape.radius < 1:
+	if foodValue < 1:
 		queue_free()
 	if get_overlapping_bodies() != []:
-		foodCollision.shape.radius -= 0.1
+		foodValue -= foodRatio/10
+		foodCollision.shape.radius -= foodRatio / foodRatio /10
 		queue_redraw() 
 
 
 func _draw():
-	draw_circle(Vector2(get_parent().position.x,get_parent().position.y),foodCollision.shape.radius,Color.GREEN,true)
+	draw_circle(Vector2(0,0),foodCollision.shape.radius,Color.GREEN,true)

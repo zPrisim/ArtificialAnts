@@ -24,37 +24,31 @@ collision_layer = 2
 script = ExtResource("1_5tacl")
 
 [node name="antSprite" type="AnimatedSprite2D" parent="."]
-position = Vector2(74, 85)
 scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_4guct")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(74, 85)
 shape = SubResource("CapsuleShape2D_5tacl")
 
 [node name="RayCastCollision" type="RayCast2D" parent="."]
-position = Vector2(74, 81)
 target_position = Vector2(0, -15)
 
 [node name="RayCastPosFront" type="RayCast2D" parent="."]
-position = Vector2(74, 81)
 target_position = Vector2(0, -5)
 hit_from_inside = true
 
 [node name="RayCastPosLeft" type="RayCast2D" parent="."]
-position = Vector2(73, 81)
 target_position = Vector2(-3, -3)
 hit_from_inside = true
 
 [node name="RayCastPosRight" type="RayCast2D" parent="."]
-position = Vector2(75, 81)
 target_position = Vector2(3, -3)
 hit_from_inside = true
 
 [node name="Label" type="Label" parent="."]
 visible = false
-offset_left = 67.0
-offset_top = 71.0
-offset_right = 81.0
-offset_bottom = 94.0
+offset_left = -7.0
+offset_top = -11.0
+offset_right = 7.0
+offset_bottom = 12.0
 script = ExtResource("3_acg2n")
