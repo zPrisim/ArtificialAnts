@@ -17,4 +17,4 @@ func _ready():
 func _process(_delta):
 	if sprite.self_modulate.a <= 0.01:
 		queue_free()
-	sprite.self_modulate.a -= 0.001
+	sprite.self_modulate.a -= 0.01 # beoin d'un timer ici
