@@ -20,28 +20,38 @@ radius = 4.0
 height = 10.0
 
 [node name="ant" type="CharacterBody2D"]
+z_index = 1
 collision_layer = 2
 script = ExtResource("1_5tacl")
 
 [node name="antSprite" type="AnimatedSprite2D" parent="."]
-scale = Vector2(0.1, 0.1)
+scale = Vector2(0.075, 0.075)
 sprite_frames = SubResource("SpriteFrames_4guct")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.75, 0.75)
 shape = SubResource("CapsuleShape2D_5tacl")
 
 [node name="RayCastCollision" type="RayCast2D" parent="."]
+position = Vector2(0, -2)
+scale = Vector2(0.75, 0.75)
 target_position = Vector2(0, -15)
 
 [node name="RayCastPosFront" type="RayCast2D" parent="."]
+position = Vector2(0, -3)
+scale = Vector2(0.75, 0.75)
 target_position = Vector2(0, -5)
 hit_from_inside = true
 
 [node name="RayCastPosLeft" type="RayCast2D" parent="."]
+position = Vector2(-1, -3)
+scale = Vector2(0.75, 0.75)
 target_position = Vector2(-3, -3)
 hit_from_inside = true
 
 [node name="RayCastPosRight" type="RayCast2D" parent="."]
+position = Vector2(1, -3)
+scale = Vector2(0.75, 0.75)
 target_position = Vector2(3, -3)
 hit_from_inside = true
 

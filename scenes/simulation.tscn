@@ -34,13 +34,13 @@ width = 1.0
 default_color = Color(0, 0, 0, 1)
 script = ExtResource("2_ljsjv")
 
-[node name="fps" type="Label" parent="."]
+[node name="infos" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("3_mwrr7")
 
 [node name="antHill" type="Area2D" parent="."]
-z_index = 1
+z_index = 2
 collision_mask = 3
 script = ExtResource("4_ljsjv")
 
