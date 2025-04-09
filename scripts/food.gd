@@ -3,7 +3,7 @@ extends Area2D
 
 var radius : float
 var foodValue : float
-var foodRatio : float = 100
+var foodRatio : float = 10
 
 
 func _ready():

@@ -1,59 +1,52 @@
-[gd_scene load_steps=6 format=3 uid="uid://dofy51hmfv30v"]
+[gd_scene load_steps=5 format=3 uid="uid://dofy51hmfv30v"]
 
 [ext_resource type="Script" uid="uid://sjew7gcdmvx4" path="res://scripts/ant_movement.gd" id="1_5tacl"]
 [ext_resource type="Texture2D" uid="uid://cci2wnk0ctvom" path="res://assets/images/ant-black.png" id="2_q4ieg"]
 [ext_resource type="Script" uid="uid://x8738j3ao3o5" path="res://scripts/antLabel.gd" id="3_acg2n"]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_4guct"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("2_q4ieg")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5tacl"]
-radius = 4.0
-height = 10.0
+radius = 5.33333
+height = 13.3333
 
 [node name="ant" type="CharacterBody2D"]
 z_index = 1
-collision_layer = 2
+collision_layer = 4
 script = ExtResource("1_5tacl")
 
-[node name="antSprite" type="AnimatedSprite2D" parent="."]
+[node name="antSprite" type="Sprite2D" parent="."]
 scale = Vector2(0.075, 0.075)
-sprite_frames = SubResource("SpriteFrames_4guct")
+texture = ExtResource("2_q4ieg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(0.75, 0.75)
 shape = SubResource("CapsuleShape2D_5tacl")
 
-[node name="RayCastCollision" type="RayCast2D" parent="."]
-position = Vector2(0, -2)
-scale = Vector2(0.75, 0.75)
-target_position = Vector2(0, -15)
-
 [node name="RayCastPosFront" type="RayCast2D" parent="."]
 position = Vector2(0, -3)
 scale = Vector2(0.75, 0.75)
 target_position = Vector2(0, -5)
+collision_mask = 4
 hit_from_inside = true
+collide_with_areas = true
+collide_with_bodies = false
 
 [node name="RayCastPosLeft" type="RayCast2D" parent="."]
 position = Vector2(-1, -3)
 scale = Vector2(0.75, 0.75)
 target_position = Vector2(-3, -3)
+collision_mask = 4
 hit_from_inside = true
+collide_with_areas = true
+collide_with_bodies = false
 
 [node name="RayCastPosRight" type="RayCast2D" parent="."]
 position = Vector2(1, -3)
 scale = Vector2(0.75, 0.75)
 target_position = Vector2(3, -3)
+collision_mask = 4
 hit_from_inside = true
+collide_with_areas = true
+collide_with_bodies = false
 
 [node name="Label" type="Label" parent="."]
 visible = false

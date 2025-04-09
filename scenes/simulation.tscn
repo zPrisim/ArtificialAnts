@@ -35,13 +35,15 @@ default_color = Color(0, 0, 0, 1)
 script = ExtResource("2_ljsjv")
 
 [node name="infos" type="Label" parent="."]
+top_level = true
 offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("3_mwrr7")
 
 [node name="antHill" type="Area2D" parent="."]
 z_index = 2
-collision_mask = 3
+collision_layer = 2
+collision_mask = 4
 script = ExtResource("4_ljsjv")
 
 [node name="antHillCollision" type="CollisionShape2D" parent="antHill"]
