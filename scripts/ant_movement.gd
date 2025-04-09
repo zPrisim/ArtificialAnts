@@ -6,12 +6,11 @@ extends CharacterBody2D
 @onready var rightRaycast = $RayCastPosRight
 @export var id: int
 
-var maxSpeed = 50.0
+var maxSpeed = 100000.0
 var steerStrength = 50.0 # force changement de direction
 var wanderStrength = 0.3 # force de l'aléatoire
 var desiredDirection: Vector2
-var WSX = DisplayServer.window_get_size().x
-var WSY = DisplayServer.window_get_size().y
+
 
 enum types {HOME, FOOD}
 var pheromoneSpawnTimeDelay = 0.3
@@ -54,13 +53,10 @@ func search(delta):
 	$antSprite.rotation = PI/2
 		
 func _physics_process(delta):
-	if !hasFood:
-		search(delta)
+		search(delta) # méthode à complémenter : prise en compte des phéromones
 		if move_and_slide():
 			var collision = move_and_slide()
-			if collision:
-				# Inverse la direction pour rebondir
+			if collision: # rebond temporaire : a changer
 				velocity = -velocity * 0.5  # on ralenti la vitesse
 				desiredDirection = velocity 
-	else:
-		pass
+	# implémenter le cas ou la fourmis à de la nourriture : retour a la fourmillière

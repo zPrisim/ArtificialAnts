@@ -8,8 +8,8 @@ extends Node2D
 enum types {HOME, FOOD}
 
 
-var WSX = DisplayServer.window_get_size().x
-var WSY = DisplayServer.window_get_size().y
+
+var antHillPos = Vector2(640,360)
 
 var ants : Array
 var foods : Array
@@ -18,7 +18,7 @@ var antNumber : int = 50
 
 
 func _ready():
-	antHill.position = Vector2(640,360)
+	antHill.position = antHillPos
 	var instFood = food.instantiate()
 	instFood.radius = 25.0
 	instFood.position = Vector2(500,500)
