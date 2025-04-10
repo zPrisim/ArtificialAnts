@@ -4,19 +4,19 @@ extends Area2D
 
 enum types {HOME, FOOD}
 
-var type 
+var type : types
 var value : float
 var deathTimer : Timer
 var lifeTimer : Timer
 
-var lifeTime = 10.0
+var lifeTime = 15.0
 
 func _ready():
 	if type == types.FOOD:
-		value = 1.0
+		value = 10.0
 		sprite.self_modulate = Color(255,0,0)
 	else:
-		value = 0.5
+		value = 0.1
 	
 	lifeTimer = Timer.new()
 	deathTimer = Timer.new()
@@ -33,6 +33,7 @@ func _ready():
 
 func _on_timer_lifeTime():
 	sprite.self_modulate.a -= 0.01
+	value -= (lifeTime/100)*value
 	
 func _on_timer_deathTime():
 	queue_free()

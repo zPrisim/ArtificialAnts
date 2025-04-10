@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://b266q2tq83y1"]
+[gd_scene load_steps=7 format=3 uid="uid://b266q2tq83y1"]
 
 [ext_resource type="Script" uid="uid://cb7qkt38vuqi8" path="res://scripts/simulation.gd" id="1_ik8a0"]
 [ext_resource type="Script" uid="uid://docgtmjj4ffx7" path="res://scripts/ligne.gd" id="2_ljsjv"]
 [ext_resource type="Script" uid="uid://bmbqd44nsionn" path="res://scripts/fps.gd" id="3_mwrr7"]
 [ext_resource type="Script" uid="uid://bdm7u62cd6tmu" path="res://scripts/anthill.gd" id="4_ljsjv"]
+[ext_resource type="Script" uid="uid://cwmnhsftqvjaw" path="res://scenes/ant_hill_food_number.gd" id="5_mwrr7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ik8a0"]
 
@@ -48,3 +49,10 @@ script = ExtResource("4_ljsjv")
 
 [node name="antHillCollision" type="CollisionShape2D" parent="antHill"]
 shape = SubResource("CircleShape2D_ik8a0")
+
+[node name="antHillFoodNumber" type="Label" parent="antHill"]
+offset_left = -3.0
+offset_top = -12.0
+offset_right = 4.0
+offset_bottom = 11.0
+script = ExtResource("5_mwrr7")

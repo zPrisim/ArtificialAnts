@@ -39,8 +39,3 @@ wheel_down={
 
 avoidance/layer_1="Obstacles"
 avoidance/layer_2="Fourmiss"
-
-[rendering]
-
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"

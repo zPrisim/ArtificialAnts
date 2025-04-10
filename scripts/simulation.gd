@@ -14,7 +14,7 @@ var antHillPos = Vector2(640,360)
 var ants : Array
 var foods : Array
 
-var antNumber : int = 50
+var antNumber : int = 1
 
 
 func _ready():
