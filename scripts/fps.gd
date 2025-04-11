@@ -5,5 +5,6 @@ func _process(_delta):
 	text += "\nNumber of ants : " + str(get_parent().ants.size())
 	var sumFood = 0;
 	for f in get_parent().foods:
-		sumFood += f.foodValue
+		if f:
+			sumFood += f.foodValue
 	text += "\nFood on map : " + str(sumFood)

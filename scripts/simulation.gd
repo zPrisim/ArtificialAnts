@@ -7,14 +7,12 @@ extends Node2D
 
 enum types {HOME, FOOD}
 
-
-
 var antHillPos = Vector2(640,360)
 
 var ants : Array
 var foods : Array
 
-var antNumber : int = 1
+var antNumber : int = 20	
 
 
 func _ready():
@@ -32,7 +30,6 @@ func _ready():
 	foods.append(instFood2)
 	
 	ants_around_anthill(antHill.position,25.0,ant,antNumber,0.0)
-
 	# Gerer quand plusieurs phéromones au même endroit : somme des valeur, modification de la couleur etc
 
 

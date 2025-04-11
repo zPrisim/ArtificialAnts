@@ -1,17 +1,8 @@
 extends Area2D
 
-enum types {HOME, FOOD}
-
-var tabPheromone = []
-
-
-func pheromoneSensor() -> float: 
-	var pheromones = get_overlapping_areas()
-	if  pheromones != []:
-		var sum : float = 0
-		for p in pheromones:
-			if tabPheromone.find(p,0) == -1:
-				sum+= p.value
-			tabPheromone.append(p)
-		return sum
-	return 0.0
+func sensor() -> Array[Area2D]: 
+	var value = get_overlapping_areas()
+	return value
+	
+func _draw():
+	draw_circle(Vector2(0,0),$CollisionShape2D.shape.radius,Color.VIOLET,0)
