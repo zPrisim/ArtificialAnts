@@ -12,17 +12,18 @@ extends CharacterBody2D
 enum types {HOME, FOOD}
 
 var maxSpeed = 80.0
-var steerStrength = 20.0 # force changement de direction : augmente grandement la vitesse aussi
+var steerStrength = 100.0 # force changement de direction : augmente grandement la vitesse aussi
 var wanderStrength = 0.1 # force de l'aléatoire
 var desiredDirection: Vector2
-
-
-
-var pheromoneSpawnTimeDelay = 0.2
+var anthill: Node2D
+var pheromoneSpawnTimeDelay = 0.3
 var pheromoneSpawnTimer: Timer
 var hasFood: bool
+var hadFood: bool
+var lastFood : Node2D
 
 func _ready():
+	hadFood = false
 	hasFood = false
 	pheromoneSpawnTimer = Timer.new()
 	pheromoneSpawnTimer.connect("timeout", _onTimerPheromoneSpawnTime)
@@ -47,13 +48,14 @@ func move(delta : float, t : types):
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle)) 
 
 	# choix direction
-	if t == types.FOOD :
+	if t == types.FOOD && lastFood == null: # si recherche de nourriture , sans déja voir trouvé de source
 		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)).normalized()
-	else:
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)/10).normalized()
+	elif t == types.FOOD && lastFood != null:# si recherche de nourriture , avec une source déja mémorisée
+		desiredDirection = (desiredDirection + handlePheromoneSensors(t)).normalized()
+	elif t == types.HOME: # Si retour à la fourmillière avec de la nourriture
+		desiredDirection = (desiredDirection + handlePheromoneSensors(t)).normalized()
 
 	var desiredVelocity = desiredDirection * maxSpeed
-
 	var desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
 	var acceleration = desiredSteeringForce.limit_length(steerStrength)
 	velocity = (velocity + acceleration* delta).limit_length(maxSpeed)
@@ -77,9 +79,13 @@ func handlePheromoneSensors( t : types) -> Vector2:
 	var leftPheromones = leftSensor.sensor()
 	var centrePheromones = centreSensor.sensor()
 	var rightPheromones = rightSensor.sensor()
-		
+	var allPheromones = leftPheromones + rightPheromones + centrePheromones
+
 		
 	if t == types.FOOD:
+		if lastFood != null:
+			return isNear(allPheromones, lastFood)
+		hadFood = false
 		var sumLeft = sumArray(leftPheromones)
 		var sumCentre = sumArray(centrePheromones)
 		var sumRight = sumArray(rightPheromones)
@@ -90,21 +96,28 @@ func handlePheromoneSensors( t : types) -> Vector2:
 		elif sumRight > sumLeft:
 			return (rightSensor.global_position - global_position).normalized()
 	elif t == types.HOME:
-		var allPheromones = leftPheromones + rightPheromones + centrePheromones
-		var selfPheromoneId = allPheromones.find_custom(is_self.bind())
-		if selfPheromoneId != -1:
-			return (allPheromones[selfPheromoneId].global_position - global_position).normalized()
+		return isNear(allPheromones, anthill)
 	return Vector2(0,0)
 
 func handleFood(f):
-	f.foodValue -= f.foodRatio/10
-	f.foodCollision.shape.radius -= f.foodRatio / f.foodRatio /10
-	hasFood = true
+	if(f.foodCollision.shape.radius > 1):
+		f.foodValue -= f.foodRatio/10
+		f.foodCollision.shape.radius -= f.foodRatio / f.foodRatio /10
+		hasFood = true
+	else:
+		f.queue_free()
 
-func is_self(p):
-	if p.id == id:
-		return true
-	return false
+func isNear(pA : Array, n : Node2D) -> Vector2:
+	var minDist = 5000
+	var minVec = Vector2.ZERO
+	for p in pA:
+		var dist = p.global_position.distance_to(n.global_position)
+		if dist < minDist:
+			minDist = dist
+			minVec = p.global_position
+	if minVec != Vector2.ZERO:
+		return (minVec - global_position).normalized()
+	return Vector2.ZERO
 
 func _physics_process(delta):
 	if !hasFood:
@@ -113,6 +126,9 @@ func _physics_process(delta):
 			var collider = get_last_slide_collision().get_collider()
 			if collider.is_in_group("foodRessource"):
 				handleFood(collider)
+				if !hadFood:
+					lastFood = collider
+					hadFood = true
 			TurnAround()
 	elif hasFood:
 		move(delta, types.HOME)
@@ -121,10 +137,15 @@ func _physics_process(delta):
 			if collider.is_in_group("antHill"):
 				hasFood = false
 				collider.foodNumber+=1
-			TurnAround()
+			elif !collider.is_in_group("foodRessource"):
+				TurnAround()
 
-
+"""
 func _draw() -> void:
+
 	draw_circle(Vector2(0,0),$CollisionShape2D.shape.radius,Color.DARK_BLUE,0)
 
-	# implémenter le cas ou la fourmis à de la nourriture : retour a la fourmillière
+	draw_circle(rightSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
+	draw_circle(centreSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
+	draw_circle(leftSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
+"""	

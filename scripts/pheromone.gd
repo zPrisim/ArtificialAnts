@@ -12,14 +12,14 @@ var value : float
 var deathTimer : Timer
 var lifeTimer : Timer
 
-var lifeTime = 40.0
+var lifeTime = 20.0
 
 func _ready():
 	if type == types.FOOD:
 		value = 10.0
 		sprite.self_modulate = Color(255,0,0)
 	else:
-		value = 5.0
+		value = 10.0
 		sprite.self_modulate = Color(0,0,255)
 
 	lifeTimer = Timer.new()

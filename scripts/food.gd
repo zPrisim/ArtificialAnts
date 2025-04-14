@@ -8,6 +8,7 @@ var foodRatio : float = 10
 
 func _ready():
 	add_to_group("foodRessource")
+	foodCollision.shape = foodCollision.shape.duplicate()
 	foodCollision.shape.radius = radius
 	foodValue = radius * foodRatio
 

@@ -11,8 +11,8 @@ collision_layer = 8
 collision_mask = 4
 script = ExtResource("1_qs1xe")
 
-[node name="pheromoneSprite" type="Sprite2D" parent="."]
-texture = ExtResource("2_qs1xe")
-
 [node name="pheromoneCollision" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_qs1xe")
+
+[node name="pheromoneSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_qs1xe")

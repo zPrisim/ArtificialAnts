@@ -56,3 +56,7 @@ offset_top = -12.0
 offset_right = 4.0
 offset_bottom = 11.0
 script = ExtResource("5_mwrr7")
+
+[node name="obstacle" type="Line2D" parent="."]
+points = PackedVector2Array(300, 100, 100, 300)
+script = ExtResource("2_ljsjv")
