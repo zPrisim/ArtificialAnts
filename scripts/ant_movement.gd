@@ -6,6 +6,8 @@ extends CharacterBody2D
 @onready var centreSensor = $centre
 @onready var leftSensor = $leftAntenna
 
+@onready var vision = $antVision
+
 
 @export var id: int
 
@@ -15,6 +17,10 @@ var maxSpeed = 80.0
 var steerStrength = 100.0 # force changement de direction : augmente grandement la vitesse aussi
 var wanderStrength = 0.1 # force de l'aléatoire
 var desiredDirection: Vector2
+var desiredVelocity
+var desiredSteeringForce
+var acceleration
+
 var anthill: Node2D
 var pheromoneSpawnTimeDelay = 0.3
 var pheromoneSpawnTimer: Timer
@@ -22,14 +28,23 @@ var hasFood: bool
 var hadFood: bool
 var lastFood : Node2D
 
+const TIME_TO_UPDATE = 0.005
+var updateTimer : Timer
+
+
 func _ready():
+	#updateTimer = Timer.new()
+	
+	#updateTimer.connect("timeout", _on_timer_update)
+	
 	hadFood = false
 	hasFood = false
 	pheromoneSpawnTimer = Timer.new()
 	pheromoneSpawnTimer.connect("timeout", _onTimerPheromoneSpawnTime)
 	add_child(pheromoneSpawnTimer)
-	
+	#add_child(updateTimer)
 	pheromoneSpawnTimer.start(pheromoneSpawnTimeDelay)
+	#updateTimer.start(TIME_TO_UPDATE)
 	
 func _onTimerPheromoneSpawnTime():
 	var p = pheromone.instantiate()
@@ -51,13 +66,13 @@ func move(delta : float, t : types):
 	if t == types.FOOD && lastFood == null: # si recherche de nourriture , sans déja voir trouvé de source
 		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)).normalized()
 	elif t == types.FOOD && lastFood != null:# si recherche de nourriture , avec une source déja mémorisée
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t)).normalized()
+		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength/100)).normalized()
 	elif t == types.HOME: # Si retour à la fourmillière avec de la nourriture
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t)).normalized()
+		desiredDirection = (desiredDirection + handlePheromoneSensors(t)+ (randomPoint * wanderStrength/100)).normalized()
 
-	var desiredVelocity = desiredDirection * maxSpeed
-	var desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
-	var acceleration = desiredSteeringForce.limit_length(steerStrength)
+	desiredVelocity = desiredDirection * maxSpeed
+	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
+	acceleration = desiredSteeringForce.limit_length(steerStrength)
 	velocity = (velocity + acceleration* delta).limit_length(maxSpeed)
 	rotation = atan2(velocity.y, velocity.x) + PI/2
 
@@ -81,10 +96,13 @@ func handlePheromoneSensors( t : types) -> Vector2:
 	var rightPheromones = rightSensor.sensor()
 	var allPheromones = leftPheromones + rightPheromones + centrePheromones
 
-		
 	if t == types.FOOD:
+		var v = vision.sensor("foodRessource") 
+		if v != null:
+			return (v.global_position  - global_position).normalized()
 		if lastFood != null:
 			return isNear(allPheromones, lastFood)
+			#return (lastFood.global_position  - global_position).normalized()
 		hadFood = false
 		var sumLeft = sumArray(leftPheromones)
 		var sumCentre = sumArray(centrePheromones)
@@ -96,6 +114,9 @@ func handlePheromoneSensors( t : types) -> Vector2:
 		elif sumRight > sumLeft:
 			return (rightSensor.global_position - global_position).normalized()
 	elif t == types.HOME:
+		var v = vision.sensor("antHill") 
+		if v != null:
+			return (v.global_position  - global_position).normalized()
 		return isNear(allPheromones, anthill)
 	return Vector2(0,0)
 
@@ -110,8 +131,9 @@ func handleFood(f):
 func isNear(pA : Array, n : Node2D) -> Vector2:
 	var minDist = 5000
 	var minVec = Vector2.ZERO
+	var dist
 	for p in pA:
-		var dist = p.global_position.distance_to(n.global_position)
+		dist = p.global_position.distance_to(n.global_position)
 		if dist < minDist:
 			minDist = dist
 			minVec = p.global_position
@@ -119,7 +141,7 @@ func isNear(pA : Array, n : Node2D) -> Vector2:
 		return (minVec - global_position).normalized()
 	return Vector2.ZERO
 
-func _physics_process(delta):
+func _physics_process(delta: float) -> void: #(delta = get_physics_process_delta_time()):
 	if !hasFood:
 		move(delta, types.FOOD)
 		if move_and_slide() :

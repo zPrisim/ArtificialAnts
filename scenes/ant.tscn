@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://dofy51hmfv30v"]
+[gd_scene load_steps=9 format=3 uid="uid://dofy51hmfv30v"]
 
 [ext_resource type="Script" uid="uid://sjew7gcdmvx4" path="res://scripts/ant_movement.gd" id="1_5tacl"]
 [ext_resource type="Texture2D" uid="uid://cci2wnk0ctvom" path="res://assets/images/ant-black.png" id="2_q4ieg"]
 [ext_resource type="Script" uid="uid://x8738j3ao3o5" path="res://scripts/antLabel.gd" id="3_acg2n"]
 [ext_resource type="Script" uid="uid://drl21frpukxce" path="res://scripts/antenna.gd" id="4_8svqu"]
+[ext_resource type="Script" uid="uid://b3bbpauotypwp" path="res://scripts/ant_vision.gd" id="5_hkm68"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5tacl"]
 radius = 5.33333
@@ -12,7 +13,11 @@ height = 13.3333
 [sub_resource type="CircleShape2D" id="CircleShape2D_acg2n"]
 radius = 6.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_1c1h0"]
+radius = 26.0192
+
 [node name="ant" type="CharacterBody2D"]
+light_mask = 0
 z_index = 1
 rotation = 0.00465113
 collision_layer = 4
@@ -68,3 +73,10 @@ script = ExtResource("4_8svqu")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="centre"]
 shape = SubResource("CircleShape2D_acg2n")
+
+[node name="antVision" type="Area2D" parent="."]
+collision_mask = 2
+script = ExtResource("5_hkm68")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="antVision"]
+shape = SubResource("CircleShape2D_1c1h0")
