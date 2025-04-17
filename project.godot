@@ -17,9 +17,11 @@ config/icon="res://assets/images/icon.svg"
 
 [display]
 
-window/size/viewport_width=1500
-window/size/viewport_height=800
+window/size/viewport_width=1480
+window/size/viewport_height=720
 window/size/initial_position_type=0
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
 
 [input]
@@ -39,3 +41,11 @@ wheel_down={
 
 avoidance/layer_1="Obstacles"
 avoidance/layer_2="Fourmiss"
+
+[physics]
+
+common/physics_ticks_per_second=30
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
