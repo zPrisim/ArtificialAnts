@@ -7,19 +7,23 @@ enum types {HOME, FOOD}
 var id
 var type : types
 var value : float
-var valueDecrement
+
+const homeValue = 10.0
+const foodValue = 20.0
+
+var baseOpacity
 
 var deathTimer : Timer
 var lifeTimer : Timer
 
-var lifeTime = 15.0
+var lifeTime = 10.0
 
 func _ready():
 	if type == types.FOOD:
-		value = 20.0
+		value = foodValue
 		sprite.self_modulate = Color(255,0,0)
 	else:
-		value = 10.0
+		value = homeValue
 		sprite.self_modulate = Color(0,0,255)
 
 	lifeTimer = Timer.new()
@@ -32,11 +36,12 @@ func _ready():
 	add_child(lifeTimer)
 	add_child(deathTimer)
 	
-	lifeTimer.start(lifeTime/10)
+	lifeTimer.start(lifeTime/4)
 	deathTimer.start(lifeTime)
+	sprite.self_modulate.a = baseOpacity
 
 func _on_timer_lifeTime():
-	sprite.self_modulate.a -= 0.1
+	sprite.self_modulate.a -= 0.25
 	value -= (lifeTime/10)
 	
 func _on_timer_deathTime():

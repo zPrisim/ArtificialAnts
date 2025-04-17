@@ -1,5 +1,6 @@
 extends Label
 func _process(_delta):
+	set("theme_override_colors/font_color", Color.BLACK)
 	text = ""
 	text += "fps: " + str(Engine.get_frames_per_second())
 	text += "\nNumber of ants : " + str(get_parent().ants.size())

@@ -31,6 +31,8 @@ var lastFood : Node2D
 const TIME_TO_UPDATE = 0.005
 var updateTimer : Timer
 
+var distMax = 1000
+
 
 func _ready():
 	#updateTimer = Timer.new()
@@ -48,10 +50,24 @@ func _ready():
 	
 func _onTimerPheromoneSpawnTime():
 	var p = pheromone.instantiate()
+	var distance
+	var normalized_distance 
+	
 	if hasFood:
+		if lastFood != null:
+			distance = global_position.distance_to(lastFood.global_position)
+		else:
+			distance = 0			
+		normalized_distance = distance / distMax
 		p.type = types.FOOD
+		p.value = p.foodValue * (1.0 - normalized_distance)
+		p.baseOpacity = 1 * p.value / p.foodValue
 	else:
+		distance = global_position.distance_to(anthill.global_position)
+		normalized_distance = distance / distMax
 		p.type = types.HOME
+		p.value = p.homeValue * (1.0 - normalized_distance)
+		p.baseOpacity = 1 * p.value / p.homeValue
 	p.id = id
 	get_parent().add_child(p)
 	p.global_position = global_position 
@@ -80,7 +96,7 @@ func move(delta : float, t : types):
 func TurnAround() -> void: # A modifier, les fourmis se bloquent
 	velocity = -velocity * 0.5  # on ralenti la vitesse
 	desiredDirection = velocity 
-
+	 
 
 func sumArray(a : Array):
 	var sum = 0
@@ -97,6 +113,9 @@ func handlePheromoneSensors( t : types) -> Vector2:
 	var allPheromones = leftPheromones + rightPheromones + centrePheromones
 
 	if t == types.FOOD:
+		set_collision_mask_value(2, true)
+		set_collision_mask_value(5, false)
+
 		var v = vision.sensor("foodRessource") 
 		if v != null:
 			return (v.global_position  - global_position).normalized()
@@ -114,6 +133,9 @@ func handlePheromoneSensors( t : types) -> Vector2:
 		elif sumRight > sumLeft:
 			return (rightSensor.global_position - global_position).normalized()
 	elif t == types.HOME:
+		set_collision_mask_value(2, false)
+		set_collision_mask_value(5, true)
+
 		var v = vision.sensor("antHill") 
 		if v != null:
 			return (v.global_position  - global_position).normalized()
@@ -159,6 +181,7 @@ func _physics_process(delta: float) -> void: #(delta = get_physics_process_delta
 			if collider.is_in_group("antHill"):
 				hasFood = false
 				collider.foodNumber+=1
+				TurnAround()
 			elif !collider.is_in_group("foodRessource"):
 				TurnAround()
 
