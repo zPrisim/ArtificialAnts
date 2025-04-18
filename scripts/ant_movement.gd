@@ -7,7 +7,7 @@ extends CharacterBody2D
 @onready var leftSensor = $leftAntenna
 
 @onready var vision = $antVision
-
+@onready var obstacleRay = $ObstacleRayCast2D
 
 @export var id: int
 
@@ -73,24 +73,28 @@ func _onTimerPheromoneSpawnTime():
 	p.global_position = global_position 
 
 func move(delta : float, t : types):
-	# random point
-	var randomAngle = randf() * TAU # TAU = 2*PI 
-	var randomRadius = sqrt(randf())  # Distribution uniforme dans le cercle
-	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle)) 
+	var randomAngle = randf() * TAU
+	var randomRadius = sqrt(randf())
+	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))
 
-	# choix direction
-	if t == types.FOOD && lastFood == null: # si recherche de nourriture , sans déja voir trouvé de source
+	if t == types.FOOD && lastFood == null:
 		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)).normalized()
-	elif t == types.FOOD && lastFood != null:# si recherche de nourriture , avec une source déja mémorisée
+	elif t == types.FOOD && lastFood != null:
 		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength/100)).normalized()
-	elif t == types.HOME: # Si retour à la fourmillière avec de la nourriture
+	elif t == types.HOME:
 		desiredDirection = (desiredDirection + handlePheromoneSensors(t)+ (randomPoint * wanderStrength/100)).normalized()
+
+	if obstacleRay.is_colliding():
+		var normal = obstacleRay.get_collision_normal()
+		var avoidance = normal.rotated(PI / 2)
+		desiredDirection = (desiredDirection + avoidance ).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
 	acceleration = desiredSteeringForce.limit_length(steerStrength)
-	velocity = (velocity + acceleration* delta).limit_length(maxSpeed)
-	rotation = atan2(velocity.y, velocity.x) + PI/2
+	velocity = (velocity + acceleration * delta).limit_length(maxSpeed)
+	rotation = atan2(velocity.y, velocity.x) + PI / 2
+
 
 
 func TurnAround() -> void: # A modifier, les fourmis se bloquent
@@ -182,9 +186,8 @@ func _physics_process(delta: float) -> void: #(delta = get_physics_process_delta
 				hasFood = false
 				collider.foodNumber+=1
 				TurnAround()
-			elif !collider.is_in_group("foodRessource"):
+			if !collider.is_in_group("foodRessource"):
 				TurnAround()
-
 """
 func _draw() -> void:
 

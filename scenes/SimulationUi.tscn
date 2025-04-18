@@ -1,4 +1,15 @@
-[gd_scene format=3 uid="uid://1bbtupm77dcp"]
+[gd_scene load_steps=5 format=3 uid="uid://1bbtupm77dcp"]
+
+[ext_resource type="Texture2D" uid="uid://ci1crv5rcfohs" path="res://assets/images/Button.png" id="1_g5bxd"]
+[ext_resource type="Script" uid="uid://cpqjlcj0gkfgg" path="res://scripts/simulation_ui.gd" id="1_gl5vq"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gl5vq"]
+texture = ExtResource("1_g5bxd")
+region_rect = Rect2(0, 0, 50, 20)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bjuw2"]
+texture = ExtResource("1_g5bxd")
+region_rect = Rect2(0, 20, 50, 20)
 
 [node name="SimulationUi" type="Control"]
 layout_mode = 3
@@ -7,6 +18,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_gl5vq")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -17,7 +29,10 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Button" type="Button" parent="MarginContainer"]
-custom_minimum_size = Vector2(50, 20)
+custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
+theme_override_styles/hover = SubResource("StyleBoxTexture_gl5vq")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_bjuw2")
+theme_override_styles/normal = SubResource("StyleBoxTexture_gl5vq")

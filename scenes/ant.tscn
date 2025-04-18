@@ -80,3 +80,6 @@ script = ExtResource("5_hkm68")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="antVision"]
 shape = SubResource("CircleShape2D_1c1h0")
+
+[node name="ObstacleRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(0, -80)

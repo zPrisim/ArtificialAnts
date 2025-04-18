@@ -9,3 +9,4 @@ func _process(_delta):
 		if f:
 			sumFood += f.foodValue
 	text += "\nFood on map : " + str(sumFood)
+	text += "\nTime elapsed : " + str("%0.2f" % (Time.get_unix_time_from_system() - get_parent().startTime))

@@ -15,6 +15,10 @@ run/main_scene="uid://b266q2tq83y1"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://assets/images/icon.svg"
 
+[autoload]
+
+SimulationUi="*res://scenes/SimulationUi.tscn"
+
 [display]
 
 window/size/viewport_width=1480
