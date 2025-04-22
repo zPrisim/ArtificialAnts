@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://dofy51hmfv30v"]
 
 [ext_resource type="Script" uid="uid://sjew7gcdmvx4" path="res://scripts/ant_movement.gd" id="1_5tacl"]
-[ext_resource type="Texture2D" uid="uid://cci2wnk0ctvom" path="res://assets/images/ant-black.png" id="2_q4ieg"]
+[ext_resource type="Texture2D" uid="uid://cci2wnk0ctvom" path="res://assets/images/ant-black.png" id="2_hkm68"]
 [ext_resource type="Script" uid="uid://x8738j3ao3o5" path="res://scripts/antLabel.gd" id="3_acg2n"]
 [ext_resource type="Script" uid="uid://drl21frpukxce" path="res://scripts/antenna.gd" id="4_8svqu"]
 [ext_resource type="Script" uid="uid://b3bbpauotypwp" path="res://scripts/ant_vision.gd" id="5_hkm68"]
@@ -30,7 +30,7 @@ script = ExtResource("1_5tacl")
 
 [node name="antSprite" type="Sprite2D" parent="."]
 scale = Vector2(0.075, 0.075)
-texture = ExtResource("2_q4ieg")
+texture = ExtResource("2_hkm68")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(0.75, 0.75)
@@ -81,5 +81,5 @@ script = ExtResource("5_hkm68")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="antVision"]
 shape = SubResource("CircleShape2D_1c1h0")
 
-[node name="ObstacleRayCast2D" type="RayCast2D" parent="."]
-target_position = Vector2(0, -80)
+[node name="frontRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(0, -60)

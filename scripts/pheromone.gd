@@ -11,12 +11,12 @@ var value : float
 const homeValue = 10.0
 const foodValue = 20.0
 
-var baseOpacity
+var baseOpacity = 1.0
 
 var deathTimer : Timer
 var lifeTimer : Timer
 
-var lifeTime = 10.0
+var lifeTime = 15.0
 
 func _ready():
 	if type == types.FOOD:
@@ -45,5 +45,6 @@ func _on_timer_lifeTime():
 	value -= (lifeTime/10)
 	
 func _on_timer_deathTime():
+	get_parent().pheromones.erase(self)
 	get_parent().remove_child(self)
 	queue_free()

@@ -40,7 +40,7 @@ script = ExtResource("2_ljsjv")
 
 [node name="infos" type="Label" parent="."]
 top_level = true
-z_index = 4
+z_index = 20
 offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("3_mwrr7")

@@ -7,7 +7,7 @@ extends CharacterBody2D
 @onready var leftSensor = $leftAntenna
 
 @onready var vision = $antVision
-@onready var obstacleRay = $ObstacleRayCast2D
+@onready var frontObstacleRay = $frontRayCast2D
 
 @export var id: int
 
@@ -35,6 +35,8 @@ var distMax = 1000
 
 
 func _ready():
+	add_to_group("ant")
+
 	#updateTimer = Timer.new()
 	
 	#updateTimer.connect("timeout", _on_timer_update)
@@ -61,14 +63,13 @@ func _onTimerPheromoneSpawnTime():
 		normalized_distance = distance / distMax
 		p.type = types.FOOD
 		p.value = p.foodValue * (1.0 - normalized_distance)
-		p.baseOpacity = 1 * p.value / p.foodValue
 	else:
 		distance = global_position.distance_to(anthill.global_position)
 		normalized_distance = distance / distMax
 		p.type = types.HOME
 		p.value = p.homeValue * (1.0 - normalized_distance)
-		p.baseOpacity = 1 * p.value / p.homeValue
 	p.id = id
+	get_parent().pheromones.append(p)
 	get_parent().add_child(p)
 	p.global_position = global_position 
 
@@ -77,17 +78,25 @@ func move(delta : float, t : types):
 	var randomRadius = sqrt(randf())
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))
 
+
+	if frontObstacleRay.is_colliding():
+		var normal = frontObstacleRay.get_collision_normal()
+		var rng = randf()
+		var avoidance
+		if rng < 0.5:
+			avoidance = normal.rotated(PI / 4)
+		else:
+			avoidance = normal.rotated(-PI / 4)
+		desiredDirection = (desiredDirection + avoidance ).normalized()
+
+
 	if t == types.FOOD && lastFood == null:
 		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)).normalized()
 	elif t == types.FOOD && lastFood != null:
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength/100)).normalized()
+		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength/10)).normalized()
 	elif t == types.HOME:
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t)+ (randomPoint * wanderStrength/100)).normalized()
+		desiredDirection = (desiredDirection + handlePheromoneSensors(t)+ (randomPoint * wanderStrength/10)).normalized()
 
-	if obstacleRay.is_colliding():
-		var normal = obstacleRay.get_collision_normal()
-		var avoidance = normal.rotated(PI / 2)
-		desiredDirection = (desiredDirection + avoidance ).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
@@ -177,7 +186,6 @@ func _physics_process(delta: float) -> void: #(delta = get_physics_process_delta
 				if !hadFood:
 					lastFood = collider
 					hadFood = true
-			TurnAround()
 	elif hasFood:
 		move(delta, types.HOME)
 		if move_and_slide() :
@@ -185,14 +193,12 @@ func _physics_process(delta: float) -> void: #(delta = get_physics_process_delta
 			if collider.is_in_group("antHill"):
 				hasFood = false
 				collider.foodNumber+=1
-				TurnAround()
-			if !collider.is_in_group("foodRessource"):
-				TurnAround()
-"""
+
+	queue_redraw()
 func _draw() -> void:
-
-	draw_circle(Vector2(0,0),$CollisionShape2D.shape.radius,Color.DARK_BLUE,0)
-
+	if hasFood:
+		draw_circle(Vector2(0,-5),2.5,Color.GREEN,10)
+"""
 	draw_circle(rightSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
 	draw_circle(centreSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
 	draw_circle(leftSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
