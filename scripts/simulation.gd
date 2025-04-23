@@ -23,10 +23,10 @@ func _ready():
 	SimulationUi.ant_button_pressed.connect(_on_ant_button_pressed)
 	#Engine.set_time_scale(2)
 	#Engine.max_physics_steps_per_frame = 1;
-	antHill.position = antHillPos
+	var instMap = map.instantiate()
+	add_child(instMap)
+	antHill.position =antHillPos
 
-	add_child(map.instantiate())
-	
 	#spawn_food_source(Vector2(500,500), 25)
 	#spawn_food_source(Vector2(50,50), 25)
 	#spawn_food_source(Vector2(900,300), 25)

@@ -77,19 +77,18 @@ func move(delta : float, t : types):
 	var randomAngle = randf() * TAU
 	var randomRadius = sqrt(randf())
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))
-
-
 	if frontObstacleRay.is_colliding():
 		var normal = frontObstacleRay.get_collision_normal()
 		var rng = randf()
 		var avoidance
+		velocity = Vector2(0,0)
 		if rng < 0.5:
 			avoidance = normal.rotated(PI / 4)
 		else:
 			avoidance = normal.rotated(-PI / 4)
 		desiredDirection = (desiredDirection + avoidance ).normalized()
-
-
+	
+	
 	if t == types.FOOD && lastFood == null:
 		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)).normalized()
 	elif t == types.FOOD && lastFood != null:
@@ -186,6 +185,7 @@ func _physics_process(delta: float) -> void: #(delta = get_physics_process_delta
 				if !hadFood:
 					lastFood = collider
 					hadFood = true
+				TurnAround()
 	elif hasFood:
 		move(delta, types.HOME)
 		if move_and_slide() :
@@ -194,7 +194,11 @@ func _physics_process(delta: float) -> void: #(delta = get_physics_process_delta
 				hasFood = false
 				collider.foodNumber+=1
 
+				TurnAround()				
 	queue_redraw()
+	
+	
+
 func _draw() -> void:
 	if hasFood:
 		draw_circle(Vector2(0,-5),2.5,Color.GREEN,10)
