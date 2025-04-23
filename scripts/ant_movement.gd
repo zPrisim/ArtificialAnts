@@ -20,6 +20,7 @@ var desiredDirection: Vector2
 var desiredVelocity
 var desiredSteeringForce
 var acceleration
+var wallAvoidanceStrength = 1.5
 
 var anthill: Node2D
 var pheromoneSpawnTimeDelay = 0.3
@@ -77,6 +78,8 @@ func move(delta : float, t : types):
 	var randomAngle = randf() * TAU
 	var randomRadius = sqrt(randf())
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))
+	
+	
 	if frontObstacleRay.is_colliding():
 		var normal = frontObstacleRay.get_collision_normal()
 		var rng = randf()
@@ -92,10 +95,9 @@ func move(delta : float, t : types):
 	if t == types.FOOD && lastFood == null:
 		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)).normalized()
 	elif t == types.FOOD && lastFood != null:
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength/10)).normalized()
+		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)).normalized()
 	elif t == types.HOME:
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t)+ (randomPoint * wanderStrength/10)).normalized()
-
+		desiredDirection = (desiredDirection + handlePheromoneSensors(t)+ (randomPoint * wanderStrength)).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
@@ -175,28 +177,26 @@ func isNear(pA : Array, n : Node2D) -> Vector2:
 		return (minVec - global_position).normalized()
 	return Vector2.ZERO
 
-func _physics_process(delta: float) -> void: #(delta = get_physics_process_delta_time()):
+func _physics_process(delta: float) -> void:
 	if !hasFood:
 		move(delta, types.FOOD)
-		if move_and_slide() :
-			var collider = get_last_slide_collision().get_collider()
-			if collider.is_in_group("foodRessource"):
-				handleFood(collider)
-				if !hadFood:
-					lastFood = collider
-					hadFood = true
-				TurnAround()
-	elif hasFood:
+	else:
 		move(delta, types.HOME)
-		if move_and_slide() :
-			var collider = get_last_slide_collision().get_collider()
-			if collider.is_in_group("antHill"):
-				hasFood = false
-				collider.foodNumber+=1
 
-				TurnAround()				
+	var result = move_and_slide()
+	if result:
+		var collider = get_last_slide_collision().get_collider()
+		if collider.is_in_group("foodRessource") and !hasFood:
+			handleFood(collider)
+			if !hadFood:
+				lastFood = collider
+				hadFood = true
+			TurnAround()
+		elif collider.is_in_group("antHill") and hasFood:
+			hasFood = false
+			collider.foodNumber += 1
+			TurnAround()
 	queue_redraw()
-	
 	
 
 func _draw() -> void:

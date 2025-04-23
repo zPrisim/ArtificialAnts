@@ -82,4 +82,4 @@ script = ExtResource("5_hkm68")
 shape = SubResource("CircleShape2D_1c1h0")
 
 [node name="frontRayCast2D" type="RayCast2D" parent="."]
-target_position = Vector2(0, -10)
+target_position = Vector2(0, -6)

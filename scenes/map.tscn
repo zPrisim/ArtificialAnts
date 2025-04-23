@@ -22,3 +22,7 @@ sources/0 = SubResource("TileSetAtlasSource_paxxb")
 [node name="TileMapLayer" type="TileMapLayer"]
 tile_set = SubResource("TileSet_gldc4")
 script = ExtResource("2_paxxb")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+zoom = Vector2(1.156, 1)
