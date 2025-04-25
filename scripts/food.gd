@@ -13,8 +13,7 @@ func _ready():
 	foodValue = radius * foodRatio
 
 func _physics_process(_delta):
-	if foodValue < 0:
-		queue_free()
+
 	queue_redraw()
 
 func _draw():

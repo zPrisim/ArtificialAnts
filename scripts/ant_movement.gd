@@ -79,25 +79,18 @@ func move(delta : float, t : types):
 	var randomRadius = sqrt(randf())
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))
 	
-	
+	var avoidance =  Vector2(0,0)
 	if frontObstacleRay.is_colliding():
 		var normal = frontObstacleRay.get_collision_normal()
 		var rng = randf()
-		var avoidance
 		velocity = Vector2(0,0)
 		if rng < 0.5:
 			avoidance = normal.rotated(PI / 4)
 		else:
 			avoidance = normal.rotated(-PI / 4)
-		desiredDirection = (desiredDirection + avoidance ).normalized()
 	
-	
-	if t == types.FOOD && lastFood == null:
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)).normalized()
-	elif t == types.FOOD && lastFood != null:
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t) + (randomPoint * wanderStrength)).normalized()
-	elif t == types.HOME:
-		desiredDirection = (desiredDirection + handlePheromoneSensors(t)+ (randomPoint * wanderStrength)).normalized()
+
+	desiredDirection = (desiredDirection + avoidance + handlePheromoneSensors(t)+ (randomPoint * wanderStrength)).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
@@ -112,10 +105,10 @@ func TurnAround() -> void: # A modifier, les fourmis se bloquent
 	desiredDirection = velocity 
 	 
 
-func sumArray(a : Array):
+func sumArray(a : Array, t):
 	var sum = 0
 	for i in a.size():
-		if a[i].type == types.FOOD:
+		if a[i].type ==t:
 			sum += a[i].value
 	return sum
 
@@ -126,6 +119,7 @@ func handlePheromoneSensors( t : types) -> Vector2:
 	var rightPheromones = rightSensor.sensor()
 	var allPheromones = leftPheromones + rightPheromones + centrePheromones
 
+
 	if t == types.FOOD:
 		set_collision_mask_value(2, true)
 		set_collision_mask_value(5, false)
@@ -135,17 +129,8 @@ func handlePheromoneSensors( t : types) -> Vector2:
 			return (v.global_position  - global_position).normalized()
 		if lastFood != null:
 			return isNear(allPheromones, lastFood)
-			#return (lastFood.global_position  - global_position).normalized()
 		hadFood = false
-		var sumLeft = sumArray(leftPheromones)
-		var sumCentre = sumArray(centrePheromones)
-		var sumRight = sumArray(rightPheromones)
-		if sumCentre > max(sumLeft,sumRight):
-			return (centreSensor.global_position - global_position).normalized()
-		elif sumLeft > sumRight:
-			return (leftSensor.global_position - global_position).normalized()
-		elif sumRight > sumLeft:
-			return (rightSensor.global_position - global_position).normalized()
+
 	elif t == types.HOME:
 		set_collision_mask_value(2, false)
 		set_collision_mask_value(5, true)
@@ -154,15 +139,24 @@ func handlePheromoneSensors( t : types) -> Vector2:
 		if v != null:
 			return (v.global_position  - global_position).normalized()
 		return isNear(allPheromones, anthill)
+		
+	var sumLeft = sumArray(leftPheromones, t)
+	var sumCentre = sumArray(centrePheromones, t)
+	var sumRight = sumArray(rightPheromones, t)
+	if sumCentre > max(sumLeft,sumRight):
+		return (centreSensor.global_position - global_position).normalized()
+	elif sumLeft > sumRight:
+		return (leftSensor.global_position - global_position).normalized()
+	elif sumRight > sumLeft:
+		return (rightSensor.global_position - global_position).normalized()
 	return Vector2(0,0)
 
 func handleFood(f):
-	if(f.foodCollision.shape.radius > 1):
-		f.foodValue -= f.foodRatio/10
-		f.foodCollision.shape.radius -= f.foodRatio / f.foodRatio /10
-		hasFood = true
-	else:
+	f.foodValue -= f.foodRatio/10
+	if f.foodValue <1:
 		f.queue_free()
+	hasFood = true
+
 
 func isNear(pA : Array, n : Node2D) -> Vector2:
 	var minDist = 5000
@@ -191,11 +185,10 @@ func _physics_process(delta: float) -> void:
 			if !hadFood:
 				lastFood = collider
 				hadFood = true
-			TurnAround()
 		elif collider.is_in_group("antHill") and hasFood:
 			hasFood = false
 			collider.foodNumber += 1
-			TurnAround()
+		TurnAround()
 	queue_redraw()
 	
 
