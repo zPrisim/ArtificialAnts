@@ -18,6 +18,7 @@ config/icon="res://assets/images/icon.svg"
 [autoload]
 
 SimulationUi="*res://scenes/SimulationUi.tscn"
+Settings="*res://scripts/settings.gd"
 
 [display]
 

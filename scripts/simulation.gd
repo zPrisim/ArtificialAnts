@@ -3,16 +3,19 @@ extends Node2D
 @onready var ant = preload("res://scenes/ant.tscn")
 @onready var food = preload("res://scenes/food.tscn")
 @onready var pheromone = preload("res://scenes/pheromone.tscn")
+@onready var pheromoneMap = preload("res://scenes/pheromoneMap.tscn")
+
 @onready var map = preload("res://scenes/map.tscn")
 @onready var antHill = $antHill
 
-enum types {HOME, FOOD}
 
 var antHillPos = Vector2(640,360)
 
 var ants : Array
 var foods : Array
 var pheromones : Array
+var instMapPheromoneHome
+var instMapPheromoneFood
 
 var antNumber : int = 200
 
@@ -26,6 +29,12 @@ func _ready():
 	var instMap = map.instantiate()
 	add_child(instMap)
 	antHill.position =antHillPos
+
+	instMapPheromoneHome = pheromoneMap.instantiate()
+	add_child(instMapPheromoneHome)
+	
+	instMapPheromoneFood = pheromoneMap.instantiate()
+	add_child(instMapPheromoneFood)
 
 	#spawn_food_source(Vector2(500,500), 25)
 	#spawn_food_source(Vector2(50,50), 25)

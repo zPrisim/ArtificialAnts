@@ -1,21 +1,17 @@
 extends CharacterBody2D
 
 @onready var pheromone = preload("res://scenes/pheromone.tscn")
-
 @onready var rightSensor = $rightAntenna
 @onready var centreSensor = $centre
 @onready var leftSensor = $leftAntenna
-
 @onready var vision = $antVision
 @onready var frontObstacleRay = $frontRayCast2D
 
 @export var id: int
 
-enum types {HOME, FOOD}
-
 var maxSpeed = 80.0
-var steerStrength = 100.0 # force changement de direction : augmente grandement la vitesse aussi
-var wanderStrength = 0.1 # force de l'aléatoire
+var steerStrength = 100.0
+var wanderStrength = 0.1
 var desiredDirection: Vector2
 var desiredVelocity
 var desiredSteeringForce
@@ -27,155 +23,126 @@ var pheromoneSpawnTimeDelay = 0.3
 var pheromoneSpawnTimer: Timer
 var hasFood: bool
 var hadFood: bool
-var lastFood : Node2D
+var lastFood: Node2D
 
-const TIME_TO_UPDATE = 0.005
-var updateTimer : Timer
-
+const TIME_TO_UPDATE = 0.05
+var updateTimer: Timer
 var distMax = 1000
 
+var sensor_direction : Vector2 = Vector2.ZERO
 
 func _ready():
 	add_to_group("ant")
-
-	#updateTimer = Timer.new()
-	
-	#updateTimer.connect("timeout", _on_timer_update)
-	
 	hadFood = false
 	hasFood = false
+	
 	pheromoneSpawnTimer = Timer.new()
+	pheromoneSpawnTimer.wait_time = pheromoneSpawnTimeDelay
+	pheromoneSpawnTimer.one_shot = false
+	pheromoneSpawnTimer.autostart = true
 	pheromoneSpawnTimer.connect("timeout", _onTimerPheromoneSpawnTime)
 	add_child(pheromoneSpawnTimer)
-	#add_child(updateTimer)
-	pheromoneSpawnTimer.start(pheromoneSpawnTimeDelay)
-	#updateTimer.start(TIME_TO_UPDATE)
-	
-func _onTimerPheromoneSpawnTime():
-	var p = pheromone.instantiate()
-	var distance
-	var normalized_distance 
-	
-	if hasFood:
-		if lastFood != null:
-			distance = global_position.distance_to(lastFood.global_position)
-		else:
-			distance = 0			
-		normalized_distance = distance / distMax
-		p.type = types.FOOD
-		p.value = p.foodValue * (1.0 - normalized_distance)
-	else:
-		distance = global_position.distance_to(anthill.global_position)
-		normalized_distance = distance / distMax
-		p.type = types.HOME
-		p.value = p.homeValue * (1.0 - normalized_distance)
-	p.id = id
-	get_parent().pheromones.append(p)
-	get_parent().add_child(p)
-	p.global_position = global_position 
 
-func move(delta : float, t : types):
+	updateTimer = Timer.new()
+	updateTimer.wait_time = TIME_TO_UPDATE
+	updateTimer.one_shot = false
+	updateTimer.autostart = true
+	updateTimer.connect("timeout", _on_timer_update)
+	add_child(updateTimer)
+
+func _onTimerPheromoneSpawnTime():
+	if hasFood:
+		get_parent().instMapPheromoneFood.addPheromones(position, Settings.types.FOOD)
+	else:
+		get_parent().instMapPheromoneHome.addPheromones(position, Settings.types.HOME)
+
+func _on_timer_update():
+	if !hasFood:
+		sensor_direction = handlePheromoneSensors(Settings.types.FOOD)
+	else:
+		sensor_direction = handlePheromoneSensors(Settings.types.HOME)
+
+func move(delta : float):
 	var randomAngle = randf() * TAU
 	var randomRadius = sqrt(randf())
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))
-	
-	var avoidance =  Vector2(0,0)
-	if frontObstacleRay.is_colliding():
-		var normal = frontObstacleRay.get_collision_normal()
-		var rng = randf()
-		velocity = Vector2(0,0)
-		if rng < 0.5:
-			avoidance = normal.rotated(PI / 4)
-		else:
-			avoidance = normal.rotated(-PI / 4)
-	
 
-	desiredDirection = (desiredDirection + avoidance + handlePheromoneSensors(t)+ (randomPoint * wanderStrength)).normalized()
-
+	desiredDirection =  (desiredDirection + sensor_direction + (randomPoint * wanderStrength)).normalized()
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
 	acceleration = desiredSteeringForce.limit_length(steerStrength)
 	velocity = (velocity + acceleration * delta).limit_length(maxSpeed)
 	rotation = atan2(velocity.y, velocity.x) + PI / 2
 
-
-
-func TurnAround() -> void: # A modifier, les fourmis se bloquent
+func turn() -> void:
 	velocity = -velocity * 0.5  # on ralenti la vitesse
 	desiredDirection = velocity 
-	 
 
-func sumArray(a : Array, t):
+func sumArray(a : Array):
 	var sum = 0
 	for i in a.size():
-		if a[i].type ==t:
-			sum += a[i].value
+		sum += a[i].value
 	return sum
 
+func handlePheromoneSensors(t : Settings.types) -> Vector2:
+	var map
+	if t == Settings.types.FOOD:
+		map = get_parent().instMapPheromoneFood
+	else:
+		map = get_parent().instMapPheromoneHome
 
-func handlePheromoneSensors( t : types) -> Vector2:
-	var leftPheromones = leftSensor.sensor()
-	var centrePheromones = centreSensor.sensor()
-	var rightPheromones = rightSensor.sensor()
-	var allPheromones = leftPheromones + rightPheromones + centrePheromones
-
-
-	if t == types.FOOD:
+	var leftPheromones = map.getPheromones(leftSensor.global_position)
+	var centrePheromones = map.getPheromones(centreSensor.global_position)
+	var rightPheromones = map.getPheromones(rightSensor.global_position)
+	print(leftPheromones)
+	if t == Settings.types.FOOD:
 		set_collision_mask_value(2, true)
 		set_collision_mask_value(5, false)
-
-		var v = vision.sensor("foodRessource") 
+		var v = vision.sensor("foodRessource")
 		if v != null:
-			return (v.global_position  - global_position).normalized()
-		if lastFood != null:
-			return isNear(allPheromones, lastFood)
+			return (v.global_position - global_position).normalized()
 		hadFood = false
-
-	elif t == types.HOME:
+	elif t == Settings.types.HOME:
 		set_collision_mask_value(2, false)
 		set_collision_mask_value(5, true)
-
-		var v = vision.sensor("antHill") 
+		var v = vision.sensor("antHill")
 		if v != null:
-			return (v.global_position  - global_position).normalized()
-		return isNear(allPheromones, anthill)
-		
-	var sumLeft = sumArray(leftPheromones, t)
-	var sumCentre = sumArray(centrePheromones, t)
-	var sumRight = sumArray(rightPheromones, t)
-	if sumCentre > max(sumLeft,sumRight):
+			return (v.global_position - global_position).normalized()
+
+	var sumLeft = sumArray(leftPheromones)
+	var sumCentre = sumArray(centrePheromones)
+	var sumRight = sumArray(rightPheromones)
+
+	if sumCentre > max(sumLeft, sumRight):
 		return (centreSensor.global_position - global_position).normalized()
 	elif sumLeft > sumRight:
 		return (leftSensor.global_position - global_position).normalized()
 	elif sumRight > sumLeft:
 		return (rightSensor.global_position - global_position).normalized()
-	return Vector2(0,0)
+	return Vector2.ZERO
 
 func handleFood(f):
-	f.foodValue -= f.foodRatio/10
-	if f.foodValue <1:
+	f.foodValue -= f.foodRatio / 10
+	if f.foodValue < 1:
 		f.queue_free()
 	hasFood = true
-
 
 func isNear(pA : Array, n : Node2D) -> Vector2:
 	var minDist = 5000
 	var minVec = Vector2.ZERO
 	var dist
 	for p in pA:
-		dist = p.global_position.distance_to(n.global_position)
+		dist = p.pos.distance_to(n.global_position)
 		if dist < minDist:
 			minDist = dist
-			minVec = p.global_position
+			minVec = p.pos
 	if minVec != Vector2.ZERO:
 		return (minVec - global_position).normalized()
 	return Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
-	if !hasFood:
-		move(delta, types.FOOD)
-	else:
-		move(delta, types.HOME)
+	move(delta)
+
 
 	var result = move_and_slide()
 	if result:
@@ -188,15 +155,9 @@ func _physics_process(delta: float) -> void:
 		elif collider.is_in_group("antHill") and hasFood:
 			hasFood = false
 			collider.foodNumber += 1
-		TurnAround()
+		turn()
 	queue_redraw()
-	
 
 func _draw() -> void:
 	if hasFood:
-		draw_circle(Vector2(0,-5),2.5,Color.GREEN,10)
-"""
-	draw_circle(rightSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
-	draw_circle(centreSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
-	draw_circle(leftSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
-"""	
+		draw_circle(Vector2(0, -5), 2.5, Color.GREEN, 10)
