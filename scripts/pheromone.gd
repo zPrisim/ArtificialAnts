@@ -2,10 +2,9 @@ extends Area2D
 
 @onready var sprite = $pheromoneSprite
 
-enum types {HOME, FOOD}
 
 var id
-var type : types
+var type : Settings.types
 var value : float
 
 const homeValue = 10.0
@@ -19,12 +18,18 @@ var lifeTimer : Timer
 var lifeTime = 15.0
 
 func _ready():
-	if type == types.FOOD:
+	if type == Settings.types.FOOD:
 		value = foodValue
 		sprite.self_modulate = Color(255,0,0)
 	else:
 		value = homeValue
 		sprite.self_modulate = Color(0,0,255)
+
+	if type == Settings.types.FOOD:
+		set_collision_layer_value(5,true)
+	else:
+		set_collision_layer_value(6,true)
+
 
 	lifeTimer = Timer.new()
 	deathTimer = Timer.new()
@@ -43,6 +48,11 @@ func _ready():
 func _on_timer_lifeTime():
 	sprite.self_modulate.a -= 0.25
 	value -= (lifeTime/10)
+	
+	
+func reset_timer():
+	deathTimer.start()
+
 	
 func _on_timer_deathTime():
 	get_parent().pheromones.erase(self)
