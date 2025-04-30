@@ -18,6 +18,7 @@ var lifeTimer : Timer
 var lifeTime = 15.0
 
 func _ready():
+	add_to_group("pheromone")
 	if type == Settings.types.FOOD:
 		value = foodValue
 		sprite.self_modulate = Color(255,0,0)

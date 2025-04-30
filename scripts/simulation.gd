@@ -3,8 +3,6 @@ extends Node2D
 @onready var ant = preload("res://scenes/ant.tscn")
 @onready var food = preload("res://scenes/food.tscn")
 @onready var pheromone = preload("res://scenes/pheromone.tscn")
-#@onready var pheromoneMap = preload("res://scenes/pheromoneMap.tscn")
-
 @onready var map = preload("res://scenes/map.tscn")
 @onready var antHill = $antHill
 
@@ -14,17 +12,16 @@ var antHillPos = Vector2(640,360)
 var ants : Array
 var foods : Array
 var pheromones : Array
-var instMapPheromoneHome
-var instMapPheromoneFood
+
 
 var antNumber : int = 200
 
 var startTime = 0
 
 func _ready():
-	
 	startTime = Time.get_unix_time_from_system()
 	SimulationUi.ant_button_pressed.connect(_on_ant_button_pressed)
+	
 	#Engine.set_time_scale(2)
 	#Engine.max_physics_steps_per_frame = 1;
 	var instMap = map.instantiate()
@@ -49,7 +46,7 @@ func _ready():
 
 
 func _on_ant_button_pressed():
-	ants_around_anthill(antHill.global_position, 25.0,ant,10,0.0)
+	ants_around_anthill(antHill.global_position, 25.0,ant,SimulationUi.antSlider.value,0.0)
 
 
 func _input(event):
@@ -66,7 +63,7 @@ func spawn_food_source(pos : Vector2, r : float):
 	var instFood = food.instantiate()
 	instFood.radius = r
 	instFood.position = pos
-	instFood.foodValue = 100
+	instFood.foodValue = 1000
 	add_child(instFood)
 	foods.append(instFood)
 

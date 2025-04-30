@@ -6,20 +6,24 @@ extends CharacterBody2D
 @onready var centreSensor = $centre
 @onready var leftSensor = $leftAntenna
 
+
+@onready var closePheromone = $closePheromone
 @onready var vision = $antVision
-@onready var frontObstacleRay = $frontRayCast2D
 
 @export var id: int
 
 
+enum STATE{SEARCHING,RETURNING}
+var currentState : STATE
+
+
 var maxSpeed = 80.0
 var steerStrength = 100.0 # force changement de direction : augmente grandement la vitesse aussi
-var wanderStrength = 0.5 # force de l'aléatoire
+var wanderStrength = 0.2 # force de l'aléatoire
 var desiredDirection: Vector2
 var desiredVelocity
 var desiredSteeringForce
 var acceleration
-var wallAvoidanceStrength = 1.5
 
 var anthill: Node2D
 var pheromoneSpawnTimeDelay = 0.3
@@ -38,7 +42,7 @@ var sensor_direction : Vector2 = Vector2(0,0)
 
 func _ready():
 	add_to_group("ant")
-
+	currentState = STATE.SEARCHING
 	updateTimer = Timer.new()
 	
 	updateTimer.connect("timeout", _on_timer_update)
@@ -64,48 +68,69 @@ func _onTimerPheromoneSpawnTime():
 	var normalized_distance 
 	
 	var p = pheromone.instantiate()
-
-	if hasFood:
-		if lastFood != null:
-			distance = global_position.distance_to(lastFood.global_position)
+	
+	var existingPheromone = null
+	if currentState == STATE.SEARCHING:
+		closePheromone.set_collision_mask_value(5, false)
+		closePheromone.set_collision_mask_value(6, true)
+	elif currentState == STATE.RETURNING:
+		closePheromone.set_collision_mask_value(6, false)
+		closePheromone.set_collision_mask_value(5, true)		
+	
+	var pheromones = closePheromone.get_overlapping_areas()
+	for ph in pheromones:
+		var dist = global_position.distance_to(ph.global_position)
+		if dist <= randi() % 4 + 2: 
+			existingPheromone = ph
+			break
+	
+	if existingPheromone:
+		if hasFood:
+			if lastFood != null:
+				distance = global_position.distance_to(lastFood.global_position)
+			else:
+				distance = 0			
+			normalized_distance = distance / distMax
+			existingPheromone.value += existingPheromone.foodValue * (1.0 - normalized_distance)
 		else:
-			distance = 0			
-		normalized_distance = distance / distMax
-		p.type = Settings.types.FOOD
-		p.value = p.foodValue * (1.0 - normalized_distance)
+			distance = global_position.distance_to(anthill.global_position)
+			normalized_distance = distance / distMax
+			existingPheromone.value += existingPheromone.homeValue * (1.0 - normalized_distance)
+
+		existingPheromone.reset_timer()  
+
 	else:
-		distance = global_position.distance_to(anthill.global_position)
-		normalized_distance = distance / distMax
-		p.type = Settings.types.HOME
-		p.value = p.homeValue * (1.0 - normalized_distance)
-	p.id = id
-	get_parent().pheromones.append(p)
-	get_parent().add_child(p)
-	p.global_position = global_position
-func move(delta : float, t : Settings.types):
+		if hasFood:
+			if lastFood != null:
+				distance = global_position.distance_to(lastFood.global_position)
+			else:
+				distance = 0			
+			normalized_distance = distance / distMax
+			p.type = Settings.types.FOOD
+			p.value = p.foodValue * (1.0 - normalized_distance)
+		else:
+			distance = global_position.distance_to(anthill.global_position)
+			normalized_distance = distance / distMax
+			p.type = Settings.types.HOME
+			p.value = p.homeValue * (1.0 - normalized_distance)
+		p.id = id
+		get_parent().pheromones.append(p)
+		get_parent().add_child(p)
+		p.global_position = global_position
+	
+func move(delta : float):
 	var randomAngle = randf() * TAU
 	var randomRadius = sqrt(randf())
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))
 	
 	
-	if frontObstacleRay.is_colliding():
-		var normal = frontObstacleRay.get_collision_normal()
-		var rng = randf()
-		var avoidance
-		velocity = Vector2(0,0)
-		if rng < 0.5:
-			avoidance = normal.rotated(PI / 4)
-		else:
-			avoidance = normal.rotated(-PI / 4)
-		desiredDirection = (desiredDirection + avoidance ).normalized()
 	
-	
-	if t == Settings.types.FOOD && lastFood == null:
+	if currentState == STATE.SEARCHING && lastFood == null:
 		desiredDirection =  (desiredDirection + sensor_direction + (randomPoint * wanderStrength)).normalized()
-	elif t == Settings.types.FOOD && lastFood != null:
-		desiredDirection =  (desiredDirection + sensor_direction + (randomPoint * wanderStrength)).normalized()
-	elif t == Settings.types.HOME:
-		desiredDirection =  (desiredDirection + sensor_direction + (randomPoint * wanderStrength)).normalized()
+	elif currentState == STATE.SEARCHING && lastFood != null:
+		desiredDirection =  (desiredDirection + sensor_direction).normalized()
+	elif currentState == STATE.RETURNING:
+		desiredDirection =  (desiredDirection + sensor_direction).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
@@ -116,7 +141,7 @@ func move(delta : float, t : Settings.types):
 
 
 func TurnAround() -> void: # A modifier, les fourmis se bloquent
-	velocity = -velocity * 0.5  # on ralenti la vitesse
+	velocity = -velocity * 0.2 # on ralenti la vitesse
 	desiredDirection = velocity 
 	 
 
@@ -150,7 +175,7 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 	var rightPheromones = rightSensor.sensor()
 	var allPheromones = leftPheromones + rightPheromones + centrePheromones
 
-	if t == Settings.types.FOOD:
+	if currentState == STATE.SEARCHING:
 		set_collision_mask_value(3, true)
 		set_collision_mask_value(2, false)
 
@@ -159,7 +184,7 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 			return (v.global_position  - global_position).normalized()
 
 			#return (lastFood.global_position  - global_position).normalized()
-		if lastFood != null:
+		elif lastFood != null:
 			return isNear(allPheromones, lastFood)
 		hadFood = false
 		var sumLeft = sumArray(leftPheromones)
@@ -171,7 +196,7 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 			return (leftSensor.global_position - global_position).normalized()
 		elif sumRight > sumLeft:
 			return (rightSensor.global_position - global_position).normalized()
-	elif t == Settings.types.HOME:
+	elif currentState == STATE.RETURNING:
 		set_collision_mask_value(3, false)
 		set_collision_mask_value(2, true)
 
@@ -183,7 +208,8 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 
 func handleFood(f):
 	if(f.foodValue > 1):
-		f.foodValue -= f.foodRatio/10
+		currentState = STATE.RETURNING
+		f.foodValue -= 1
 		hasFood = true
 	else:
 		f.queue_free()
@@ -202,10 +228,7 @@ func isNear(pA : Array, n : Node2D) -> Vector2:
 	return Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
-	if !hasFood:
-		move(delta, Settings.types.FOOD)
-	else:
-		move(delta, Settings.types.HOME)
+	move(delta)
 
 	var result = move_and_slide()
 	if result:
@@ -215,13 +238,19 @@ func _physics_process(delta: float) -> void:
 			if !hadFood:
 				lastFood = collider
 				hadFood = true
+				queue_redraw()
 		elif collider.is_in_group("antHill") and hasFood:
 			hasFood = false
+			currentState = STATE.SEARCHING
 			collider.foodNumber += 1
 		TurnAround()
-	
+		queue_redraw()
 
 
+
+func _draw() -> void:
+	if hasFood:
+		draw_circle(Vector2(0, -5), 2.5, Color.GREEN, 5)
 """
 	draw_circle(rightSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
 	draw_circle(centreSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)

@@ -4,11 +4,13 @@ var fnl := FastNoiseLite.new()
 var right_click_held := false
 var paint_mode := true
 
+# https://auburn.github.io/FastNoiseLite/
+
 func _ready() -> void:
 	randomize()
 	fnl.seed = randi()
-	fnl.frequency = 0.01
-	fnl.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	fnl.frequency = 0.02
+	fnl.noise_type =FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	fnl.fractal_type = FastNoiseLite.FRACTAL_FBM
 	fnl.fractal_octaves = 1
 	fnl.domain_warp_type = FastNoiseLite.DOMAIN_WARP_BASIC_GRID
@@ -25,7 +27,7 @@ func is_edge(x: int, y: int, noise: FastNoiseLite) -> bool:
 	
 	for offset in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
 		var neighbor_val = noise.get_noise_2d(x + offset.x, y + offset.y)
-		if neighbor_val <= 0.1:
+		if neighbor_val <= 0.20:
 			return true
 	return false
 
@@ -39,11 +41,11 @@ func generateMap():
 			var shapeNoise = fnl.get_noise_2d(x , y)
 			var dist = pos.distance_to(center) / radius
 
-			if dist + shapeNoise < 1.0:
+			if dist + shapeNoise < 1.5:
 				erase_cell(Vector2i(x, y))
 			else:
 				if is_edge(x, y, fnl):
-					set_cell(Vector2i(x, y), 0, Vector2i(0, 0))
+					set_cell(Vector2i(x, y), 0, Vector2i(0, 0))	
 
 
 func _input(event: InputEvent) -> void:
@@ -56,7 +58,7 @@ func _input(event: InputEvent) -> void:
 		else:
 			right_click_held = false
 
-	var width = 1
+	var width = 2
 	if event is InputEventMouseMotion and right_click_held and event.position.x < 1280 - width:
 		var cell : Vector2i = local_to_map(event.position)
 		if width == 1:

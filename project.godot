@@ -70,10 +70,12 @@ avoidance/layer_2="Fourmiss"
 
 [physics]
 
+2d/run_on_separate_thread=true
 common/physics_ticks_per_second=30
 common/max_physics_steps_per_frame=4
 2d/default_gravity=0.0
 2d/solver/solver_iterations=8
+common/enable_object_picking=false
 
 [rendering]
 

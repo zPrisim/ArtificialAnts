@@ -3,13 +3,12 @@ extends StaticBody2D
 
 var radius : float
 var foodValue : float
-var foodRatio : float = 10
 
 
 func _ready():
 	add_to_group("foodRessource")
 	foodCollision.shape = foodCollision.shape.duplicate()
-	foodCollision.shape.radius = radius
+	foodCollision.shape.radius = radius -3
 
 func _draw():
-	draw_circle(Vector2(0,0),foodCollision.shape.radius,Color.GREEN,true)
+	draw_circle(Vector2(0,0),foodCollision.shape.radius + 3,Color.GREEN,true)
