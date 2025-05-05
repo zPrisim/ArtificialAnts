@@ -15,7 +15,7 @@ var baseOpacity = 1.0
 var deathTimer : Timer
 var lifeTimer : Timer
 
-var lifeTime = 15.0
+var lifeTime = Settings.pheromoneLifTime
 
 func _ready():
 	add_to_group("pheromone")
@@ -52,10 +52,13 @@ func _on_timer_lifeTime():
 	
 	
 func reset_timer():
-	deathTimer.start()
+	if deathTimer.is_inside_tree():
+		deathTimer.start()
 
 	
 func _on_timer_deathTime():
-	get_parent().pheromones.erase(self)
-	get_parent().remove_child(self)
-	queue_free()
+	if is_inside_tree():
+		if self in get_parent().pheromones:
+			get_parent().pheromones.erase(self)
+		get_parent().remove_child(self)
+		queue_free()

@@ -9,7 +9,7 @@ var paint_mode := true
 func _ready() -> void:
 	randomize()
 	fnl.seed = randi()
-	fnl.frequency = 0.02
+	fnl.frequency = 0.01
 	fnl.noise_type =FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	fnl.fractal_type = FastNoiseLite.FRACTAL_FBM
 	fnl.fractal_octaves = 1
@@ -33,7 +33,7 @@ func is_edge(x: int, y: int, noise: FastNoiseLite) -> bool:
 
 func generateMap():
 	var center = Vector2(160, 90)
-	var radius = 20
+	var radius = 10
 
 	for x in 320:
 		for y in 180:
@@ -58,7 +58,7 @@ func _input(event: InputEvent) -> void:
 		else:
 			right_click_held = false
 
-	var width = 2
+	var width = 1.5
 	if event is InputEventMouseMotion and right_click_held and event.position.x < 1280 - width:
 		var cell : Vector2i = local_to_map(event.position)
 		if width == 1:

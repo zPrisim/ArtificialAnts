@@ -2,7 +2,7 @@ extends StaticBody2D
 @onready var foodCollision = $foodCollision
 
 var radius : float
-var foodValue : float
+var foodValue : int
 
 
 func _ready():

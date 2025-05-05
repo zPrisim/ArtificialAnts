@@ -1,4 +1,7 @@
 extends Node
 
 enum types {HOME, FOOD}
-var pheromoneSpawnTimeDelay = 0.3
+const pheromoneSpawnTimeDelay : float = 0.3
+const pheromoneLifTime : float = 20.0
+const antLifeTime : float = 120.0
+const antSpawnCheckDelay : float = 5.0

@@ -10,23 +10,38 @@ extends Node2D
 var antHillPos = Vector2(640,360)
 
 var ants : Array
+var toBeDeadAnts : Array
 var foods : Array
 var pheromones : Array
 
+var lastFoodNumber : float
 
 var antNumber : int = 200
 
-var startTime = 0
+var startTime = 0 # pour l'affichage -> infos
+
+var antTimer : Timer
+var antSpawnTime: float = Settings.antSpawnCheckDelay
+
+
 
 func _ready():
 	startTime = Time.get_unix_time_from_system()
 	SimulationUi.ant_button_pressed.connect(_on_ant_button_pressed)
 	
-	#Engine.set_time_scale(2)
-	#Engine.max_physics_steps_per_frame = 1;
+	antTimer = Timer.new()
+
+	antTimer.connect("timeout", _on_timer_check)	
+	
+	add_child(antTimer)
+
+	
 	var instMap = map.instantiate()
 	add_child(instMap)
 	antHill.position =antHillPos
+	
+	antTimer.start(antSpawnTime)
+	
 """
 	instMapPheromoneHome = pheromoneMap.instantiate()
 	instMapPheromoneHome.type = Settings.types.HOME
@@ -44,6 +59,17 @@ func _ready():
 
 	#ants_around_anthill(25.0,ant,antNumber,0.0)
 
+func _on_timer_check():
+	print_orphan_nodes()
+	if  antHill.foodNumber - lastFoodNumber >= 5:
+		ants_around_anthill(antHill.global_position, 25.0,ant,(antHill.foodNumber - int(lastFoodNumber))%10,0.0)
+		lastFoodNumber = antHill.foodNumber
+	for a in toBeDeadAnts:
+		if !a.hasFood:
+			toBeDeadAnts.erase(a)
+			remove_child(a)
+			a.queue_free()
+
 
 func _on_ant_button_pressed():
 	ants_around_anthill(antHill.global_position, 25.0,ant,SimulationUi.antSlider.value,0.0)
@@ -53,6 +79,13 @@ func _input(event):
 	if event is InputEventMouseButton and event.is_pressed():
 		if event.position.x < 1280 and event.position.y < 720:
 			if event.button_index == MOUSE_BUTTON_LEFT:
+				for f in foods:
+					if f.global_position.distance_to(event.position) <= f.radius:
+						f.queue_free()
+
+						remove_child(f)
+						foods.erase(f)
+						return
 				spawn_food_source(event.position, 25.0)
 			#elif event.button_index == MOUSE_BUTTON_RIGHT:
 				

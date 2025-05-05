@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bdhtfrm48qe5s" path="res://scripts/map.gd" id="2_paxxb"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4xfga"]
+friction = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_paxxb"]
 texture = ExtResource("1_4xfga")

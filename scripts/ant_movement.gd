@@ -6,7 +6,6 @@ extends CharacterBody2D
 @onready var centreSensor = $centre
 @onready var leftSensor = $leftAntenna
 
-
 @onready var closePheromone = $closePheromone
 @onready var vision = $antVision
 
@@ -32,30 +31,40 @@ var hasFood: bool
 var hadFood: bool
 var lastFood : Node2D
 
-const TIME_TO_UPDATE = 0.10
+const TIME_TO_UPDATE = 0.20
 var updateTimer : Timer
+
+var lifeTime = Settings.antLifeTime
+var lifeTimer : Timer
+
 
 var distMax = 1000
 
 var sensor_direction : Vector2 = Vector2(0,0)
 
-
 func _ready():
 	add_to_group("ant")
 	currentState = STATE.SEARCHING
+	lifeTimer = Timer.new()
 	updateTimer = Timer.new()
-	
-	updateTimer.connect("timeout", _on_timer_update)
-	
-	hasFood = false
 	pheromoneSpawnTimer = Timer.new()
+
+	lifeTimer.connect("timeout", _on_timer_life)
+	updateTimer.connect("timeout", _on_timer_update)
 	pheromoneSpawnTimer.connect("timeout", _onTimerPheromoneSpawnTime)
+
+	hasFood = false
+	add_child(lifeTimer)
 	add_child(pheromoneSpawnTimer)
 	add_child(updateTimer)
+	lifeTimer.start(lifeTime)
 	pheromoneSpawnTimer.start(pheromoneSpawnTimeDelay)
 	updateTimer.start(TIME_TO_UPDATE)
 	
-	
+
+func _on_timer_life():
+	get_parent().toBeDeadAnts.append(self)
+	get_parent().ants.erase(self)
 
 func _on_timer_update():
 	if !hasFood:
@@ -128,9 +137,9 @@ func move(delta : float):
 	if currentState == STATE.SEARCHING && lastFood == null:
 		desiredDirection =  (desiredDirection + sensor_direction + (randomPoint * wanderStrength)).normalized()
 	elif currentState == STATE.SEARCHING && lastFood != null:
-		desiredDirection =  (desiredDirection + sensor_direction).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction + (randomPoint * 0.05)).normalized()
 	elif currentState == STATE.RETURNING:
-		desiredDirection =  (desiredDirection + sensor_direction).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction  + (randomPoint * 0.1)).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
@@ -142,7 +151,7 @@ func move(delta : float):
 
 func TurnAround() -> void: # A modifier, les fourmis se bloquent
 	velocity = -velocity * 0.2 # on ralenti la vitesse
-	desiredDirection = velocity 
+	desiredDirection = velocity + Vector2((randf() - 0.5) *5,(randf() - 0.5)*5)
 	 
 
 func sumArray(a : Array):
@@ -207,11 +216,13 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 	return Vector2(0,0)
 
 func handleFood(f):
-	if(f.foodValue > 1):
+	if(f.foodValue > 0):
 		currentState = STATE.RETURNING
 		f.foodValue -= 1
 		hasFood = true
 	else:
+		get_parent().foods.erase(f)
+		get_parent().remove_child(f)
 		f.queue_free()
 
 func isNear(pA : Array, n : Node2D) -> Vector2:
@@ -229,7 +240,7 @@ func isNear(pA : Array, n : Node2D) -> Vector2:
 
 func _physics_process(delta: float) -> void:
 	move(delta)
-
+	
 	var result = move_and_slide()
 	if result:
 		var collider = get_last_slide_collision().get_collider()
@@ -238,7 +249,6 @@ func _physics_process(delta: float) -> void:
 			if !hadFood:
 				lastFood = collider
 				hadFood = true
-				queue_redraw()
 		elif collider.is_in_group("antHill") and hasFood:
 			hasFood = false
 			currentState = STATE.SEARCHING
@@ -249,8 +259,11 @@ func _physics_process(delta: float) -> void:
 
 
 func _draw() -> void:
-	if hasFood:
-		draw_circle(Vector2(0, -5), 2.5, Color.GREEN, 5)
+	if currentState == STATE.RETURNING:
+		draw_circle(Vector2(0, -5), 2.5, Color.GREEN, 3)
+	elif currentState == STATE.SEARCHING and lastFood != null:
+		draw_circle(Vector2(0, -5), 2.5, Color.YELLOW, 3)
+		
 """
 	draw_circle(rightSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
 	draw_circle(centreSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)

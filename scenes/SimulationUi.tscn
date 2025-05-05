@@ -51,7 +51,6 @@ collapsed = true
 custom_minimum_size = Vector2(90, 40)
 layout_mode = 2
 min_value = 1.0
-max_value = 200.0
 value = 1.0
 rounded = true
 
