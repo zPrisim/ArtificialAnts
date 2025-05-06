@@ -12,8 +12,8 @@ const foodValue = 20.0
 
 var baseOpacity = 1.0
 
-var deathTimer : Timer
-var lifeTimer : Timer
+var deathTimer := Timer.new()
+var lifeTimer := Timer.new()
 
 var lifeTime = Settings.pheromoneLifTime
 
@@ -32,33 +32,37 @@ func _ready():
 		set_collision_layer_value(6,true)
 
 
-	lifeTimer = Timer.new()
-	deathTimer = Timer.new()
-	deathTimer.one_shot = true;
+	_setup_timers()
 	
-	lifeTimer.connect("timeout", _on_timer_lifeTime, 0)
-	deathTimer.connect("timeout", _on_timer_deathTime, 4)
+	lifeTimer.start()
+	deathTimer.start(lifeTime)
+	sprite.self_modulate.a = baseOpacity
+
+
+func _setup_timers():
+	deathTimer.one_shot = true
+	lifeTimer.wait_time = lifeTime / 4
+
+	deathTimer.connect("timeout", _on_timer_deathTime)
+	lifeTimer.connect("timeout", _on_timer_lifeTime)
 
 	add_child(lifeTimer)
 	add_child(deathTimer)
-	
-	lifeTimer.start(lifeTime/4)
-	deathTimer.start(lifeTime)
-	sprite.self_modulate.a = baseOpacity
 
 func _on_timer_lifeTime():
 	sprite.self_modulate.a -= 0.25
 	value -= (lifeTime/10)
 	
-	
 func reset_timer():
-	if deathTimer.is_inside_tree():
-		deathTimer.start()
+	if not is_inside_tree():
+		await ready
+	if lifeTimer and deathTimer:
+		sprite.self_modulate.a = baseOpacity
+		lifeTimer.start()
+		deathTimer.start(lifeTime)
 
 	
 func _on_timer_deathTime():
-	if is_inside_tree():
-		if self in get_parent().pheromones:
-			get_parent().pheromones.erase(self)
-		get_parent().remove_child(self)
-		queue_free()
+	get_parent().pheromones.erase(self)
+	get_parent().remove_child(self)
+	queue_free()

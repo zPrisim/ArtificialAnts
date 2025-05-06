@@ -76,7 +76,6 @@ func _onTimerPheromoneSpawnTime():
 	var distance
 	var normalized_distance 
 	
-	var p = pheromone.instantiate()
 	
 	var existingPheromone = null
 	if currentState == STATE.SEARCHING:
@@ -109,6 +108,7 @@ func _onTimerPheromoneSpawnTime():
 		existingPheromone.reset_timer()  
 
 	else:
+		var p = pheromone.instantiate()
 		if hasFood:
 			if lastFood != null:
 				distance = global_position.distance_to(lastFood.global_position)
@@ -262,7 +262,7 @@ func _draw() -> void:
 	if currentState == STATE.RETURNING:
 		draw_circle(Vector2(0, -5), 2.5, Color.GREEN, 3)
 	elif currentState == STATE.SEARCHING and lastFood != null:
-		draw_circle(Vector2(0, -5), 2.5, Color.YELLOW, 3)
+		draw_circle(Vector2(0, -5), 2.5, Color.YELLOW, 5)
 		
 """
 	draw_circle(rightSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
