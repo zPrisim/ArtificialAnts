@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://1bbtupm77dcp"]
+[gd_scene load_steps=9 format=3 uid="uid://1bbtupm77dcp"]
 
 [ext_resource type="Texture2D" uid="uid://ci1crv5rcfohs" path="res://assets/images/Button.png" id="1_g5bxd"]
 [ext_resource type="Script" uid="uid://cpqjlcj0gkfgg" path="res://scripts/simulation_ui.gd" id="1_gl5vq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gl5vq"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gl5vq"]
 texture = ExtResource("1_g5bxd")
@@ -9,13 +11,24 @@ region_rect = Rect2(0, 0, 50, 20)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bjuw2"]
 texture = ExtResource("1_g5bxd")
+region_rect = Rect2(49, 0, 51, 20)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bjuw2"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bfyxp"]
+texture = ExtResource("1_g5bxd")
 region_rect = Rect2(0, 20, 50, 20)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_efncr"]
+texture = ExtResource("1_g5bxd")
+region_rect = Rect2(50, 20, 50, 20)
 
 [node name="SimulationUi" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = -720.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gl5vq")
@@ -25,40 +38,90 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -202.0
-offset_bottom = 100.0
+offset_left = -200.0
+offset_bottom = 140.0
 grow_horizontal = 0
 
-[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer"]
 layout_mode = 2
-collapsed = true
+dragging_enabled = false
+dragger_visibility = 2
 
-[node name="Button" type="Button" parent="MarginContainer/HSplitContainer"]
+[node name="HSplitContainerAnt" type="HSplitContainer" parent="MarginContainer/VSplitContainer"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="antButton" type="Button" parent="MarginContainer/VSplitContainer/HSplitContainerAnt"]
 custom_minimum_size = Vector2(90, 40)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gl5vq")
 theme_override_styles/hover = SubResource("StyleBoxTexture_gl5vq")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_bjuw2")
 theme_override_styles/normal = SubResource("StyleBoxTexture_gl5vq")
+action_mode = 0
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/HSplitContainer"]
-custom_minimum_size = Vector2(90, 100)
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/HSplitContainerAnt"]
 layout_mode = 2
 collapsed = true
+dragging_enabled = false
+dragger_visibility = 2
 
-[node name="HSlider" type="HSlider" parent="MarginContainer/HSplitContainer/VSplitContainer"]
-custom_minimum_size = Vector2(90, 40)
+[node name="antHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/HSplitContainerAnt/VSplitContainer"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+size_flags_horizontal = 4
 min_value = 1.0
 value = 1.0
 rounded = true
 
-[node name="Label" type="Label" parent="MarginContainer/HSplitContainer/VSplitContainer"]
+[node name="antLabel" type="Label" parent="MarginContainer/VSplitContainer/HSplitContainerAnt/VSplitContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 4
 size_flags_vertical = 0
-text = "200"
+text = "0"
 horizontal_alignment = 1
-vertical_alignment = 1
+
+[node name="HSplitContainerFood" type="HSplitContainer" parent="MarginContainer/VSplitContainer"]
+layout_direction = 4
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="foodButton" type="Button" parent="MarginContainer/VSplitContainer/HSplitContainerFood"]
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bjuw2")
+theme_override_styles/hover = SubResource("StyleBoxTexture_bfyxp")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_efncr")
+theme_override_styles/normal = SubResource("StyleBoxTexture_bfyxp")
+toggle_mode = true
+action_mode = 0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/HSplitContainerFood"]
+custom_minimum_size = Vector2(90, 100)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="foodHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/HSplitContainerFood/VSplitContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = 50.0
+max_value = 1000.0
+step = 50.0
+value = 50.0
+rounded = true
+
+[node name="foodLabel" type="Label" parent="MarginContainer/VSplitContainer/HSplitContainerFood/VSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "0"
+horizontal_alignment = 1

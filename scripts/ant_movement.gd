@@ -31,7 +31,7 @@ var hasFood: bool
 var hadFood: bool
 var lastFood : Node2D
 
-const TIME_TO_UPDATE = 0.20
+const TIME_TO_UPDATE = 0.05
 var updateTimer : Timer
 
 var lifeTime = Settings.antLifeTime
@@ -139,7 +139,7 @@ func move(delta : float):
 	elif currentState == STATE.SEARCHING && lastFood != null:
 		desiredDirection =  (desiredDirection + sensor_direction + (randomPoint * 0.05)).normalized()
 	elif currentState == STATE.RETURNING:
-		desiredDirection =  (desiredDirection + sensor_direction  + (randomPoint * 0.1)).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction  + (randomPoint * 0.05)).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
@@ -152,7 +152,7 @@ func move(delta : float):
 func TurnAround() -> void: # A modifier, les fourmis se bloquent
 	velocity = -velocity * 0.2 # on ralenti la vitesse
 	desiredDirection = velocity + Vector2((randf() - 0.5) *5,(randf() - 0.5)*5)
-	 
+ 
 
 func sumArray(a : Array):
 	var sum = 0
@@ -215,15 +215,8 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 		return isNear(allPheromones, anthill)
 	return Vector2(0,0)
 
-func handleFood(f):
-	if(f.foodValue > 0):
-		currentState = STATE.RETURNING
-		f.foodValue -= 1
-		hasFood = true
-	else:
-		get_parent().foods.erase(f)
-		get_parent().remove_child(f)
-		f.queue_free()
+
+
 
 func isNear(pA : Array, n : Node2D) -> Vector2:
 	var minDist = 5000
@@ -238,6 +231,25 @@ func isNear(pA : Array, n : Node2D) -> Vector2:
 		return (minVec - global_position).normalized()
 	return Vector2.ZERO
 
+
+func handleFood(food : Node2D):
+	if(food.foodValue > 0):
+		currentState = STATE.RETURNING
+		food.foodValue -= 1
+		lastFood = food
+		hasFood = true
+	else:
+		get_parent().foods.erase(food)
+		get_parent().remove_child(food)
+		food.queue_free()
+		hadFood = false
+
+
+func handleAnthill(hill : Node2D):
+	hasFood = false
+	currentState = STATE.SEARCHING
+	hill.foodNumber += 1
+
 func _physics_process(delta: float) -> void:
 	move(delta)
 	
@@ -246,14 +258,10 @@ func _physics_process(delta: float) -> void:
 		var collider = get_last_slide_collision().get_collider()
 		if collider.is_in_group("foodRessource") and !hasFood:
 			handleFood(collider)
-			if !hadFood:
-				lastFood = collider
-				hadFood = true
 		elif collider.is_in_group("antHill") and hasFood:
-			hasFood = false
-			currentState = STATE.SEARCHING
-			collider.foodNumber += 1
+			handleAnthill(collider)
 		TurnAround()
+		
 		queue_redraw()
 
 

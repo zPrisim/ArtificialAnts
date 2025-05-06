@@ -9,7 +9,7 @@ var paint_mode := true
 func _ready() -> void:
 	randomize()
 	fnl.seed = randi()
-	fnl.frequency = 0.01
+	fnl.frequency = 0.0075
 	fnl.noise_type =FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	fnl.fractal_type = FastNoiseLite.FRACTAL_FBM
 	fnl.fractal_octaves = 1

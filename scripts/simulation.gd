@@ -23,12 +23,12 @@ var startTime = 0 # pour l'affichage -> infos
 var antTimer : Timer
 var antSpawnTime: float = Settings.antSpawnCheckDelay
 
-
+var canPlaceFood := false
 
 func _ready():
 	startTime = Time.get_unix_time_from_system()
 	SimulationUi.ant_button_pressed.connect(_on_ant_button_pressed)
-	
+	SimulationUi.food_button_pressed.connect(_on_food_button_pressed)
 	antTimer = Timer.new()
 
 	antTimer.connect("timeout", _on_timer_check)	
@@ -75,28 +75,31 @@ func _on_ant_button_pressed():
 	ants_around_anthill(antHill.global_position, 25.0,ant,SimulationUi.antSlider.value,0.0)
 
 
+func _on_food_button_pressed():
+	canPlaceFood = !canPlaceFood
+
 func _input(event):
 	if event is InputEventMouseButton and event.is_pressed():
 		if event.position.x < 1280 and event.position.y < 720:
 			if event.button_index == MOUSE_BUTTON_LEFT:
-				for f in foods:
-					if f.global_position.distance_to(event.position) <= f.radius:
-						f.queue_free()
-
-						remove_child(f)
-						foods.erase(f)
-						return
-				spawn_food_source(event.position, 25.0)
-			#elif event.button_index == MOUSE_BUTTON_RIGHT:
+				if canPlaceFood:
+					for f in foods:
+						if f.global_position.distance_to(event.position) <= f.radius:
+							f.queue_free()
+							remove_child(f)
+							foods.erase(f)
+							return
+					spawn_food_source(event.position, SimulationUi.foodSlider.value)
+				#elif event.button_index == MOUSE_BUTTON_RIGHT:
 				
 
 
 		
-func spawn_food_source(pos : Vector2, r : float):
+func spawn_food_source(pos : Vector2, v : float):
 	var instFood = food.instantiate()
-	instFood.radius = r
+	instFood.radius = 25.0
 	instFood.position = pos
-	instFood.foodValue = 1000
+	instFood.foodValue = v
 	add_child(instFood)
 	foods.append(instFood)
 
