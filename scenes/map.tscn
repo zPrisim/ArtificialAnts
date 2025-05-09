@@ -27,7 +27,3 @@ tile_set = SubResource("TileSet_gldc4")
 occlusion_enabled = false
 navigation_enabled = false
 script = ExtResource("2_paxxb")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-anchor_mode = 0
-zoom = Vector2(1.156, 1)

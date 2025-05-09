@@ -9,7 +9,7 @@ extends CharacterBody2D
 @onready var closePheromone = $closePheromone
 @onready var vision = $antVision
 
-@export var id: int
+@onready var id: int
 
 
 enum STATE{SEARCHING,RETURNING}
@@ -64,7 +64,6 @@ func _ready():
 
 func _on_timer_life():
 	get_parent().toBeDeadAnts.append(self)
-	get_parent().ants.erase(self)
 
 func _on_timer_update():
 	if !hasFood:
@@ -88,7 +87,7 @@ func _onTimerPheromoneSpawnTime():
 	var pheromones = closePheromone.get_overlapping_areas()
 	for ph in pheromones:
 		var dist = global_position.distance_to(ph.global_position)
-		if dist <= randi() % 4 + 2: 
+		if dist <= randi() % 7 + 5: 
 			existingPheromone = ph
 			break
 	
@@ -155,11 +154,7 @@ func TurnAround() -> void: # A modifier, les fourmis se bloquent
  
 
 func sumArray(a : Array):
-	var sum = 0
-	for i in a.size():
-		if a[i].type == Settings.types.FOOD:
-			sum += a[i].value
-	return sum
+	return a.filter(func(p): return p.type == Settings.types.FOOD).reduce(func(acc, p): return acc + p.value, 0.0)
 
 
 func handlePheromoneSensors( t : Settings.types) -> Vector2:
@@ -177,7 +172,6 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 		centreSensor.set_collision_mask_value(6, true)
 		rightSensor.set_collision_mask_value(5, false)
 		rightSensor.set_collision_mask_value(6, true)		
-
 
 	var leftPheromones = leftSensor.sensor()
 	var centrePheromones = centreSensor.sensor()
@@ -214,6 +208,7 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 			return (v.global_position  - global_position).normalized()
 		return isNear(allPheromones, anthill)
 	return Vector2(0,0)
+
 
 
 

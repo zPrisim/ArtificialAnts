@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://1bbtupm77dcp"]
+[gd_scene load_steps=13 format=3 uid="uid://1bbtupm77dcp"]
 
 [ext_resource type="Texture2D" uid="uid://ci1crv5rcfohs" path="res://assets/images/Button.png" id="1_g5bxd"]
 [ext_resource type="Script" uid="uid://cpqjlcj0gkfgg" path="res://scripts/simulation_ui.gd" id="1_gl5vq"]
+[ext_resource type="Script" uid="uid://bmbqd44nsionn" path="res://scripts/fps.gd" id="3_bjuw2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gl5vq"]
 
@@ -22,6 +23,13 @@ region_rect = Rect2(0, 20, 50, 20)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_efncr"]
 texture = ExtResource("1_g5bxd")
 region_rect = Rect2(50, 20, 50, 20)
+
+[sub_resource type="LabelSettings" id="LabelSettings_bjuw2"]
+font_size = 14
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bfyxp"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bfyxp"]
 
 [node name="SimulationUi" type="Control"]
 layout_mode = 3
@@ -47,12 +55,26 @@ layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="HSplitContainerAnt" type="HSplitContainer" parent="MarginContainer/VSplitContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 1
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="antButton" type="Button" parent="MarginContainer/VSplitContainer/HSplitContainerAnt"]
+[node name="HSplitContainerAnt" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="antButton" type="Button" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAnt"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(90, 40)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -63,13 +85,14 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_bjuw2")
 theme_override_styles/normal = SubResource("StyleBoxTexture_gl5vq")
 action_mode = 0
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/HSplitContainerAnt"]
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAnt"]
 layout_mode = 2
 collapsed = true
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="antHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/HSplitContainerAnt/VSplitContainer"]
+[node name="antHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAnt/VSplitContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -77,7 +100,8 @@ min_value = 1.0
 value = 1.0
 rounded = true
 
-[node name="antLabel" type="Label" parent="MarginContainer/VSplitContainer/HSplitContainerAnt/VSplitContainer"]
+[node name="antLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAnt/VSplitContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -85,13 +109,14 @@ size_flags_vertical = 0
 text = "0"
 horizontal_alignment = 1
 
-[node name="HSplitContainerFood" type="HSplitContainer" parent="MarginContainer/VSplitContainer"]
+[node name="HSplitContainerFood" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
 layout_direction = 4
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="foodButton" type="Button" parent="MarginContainer/VSplitContainer/HSplitContainerFood"]
+[node name="foodButton" type="Button" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerFood"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(90, 40)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -103,13 +128,13 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_bfyxp")
 toggle_mode = true
 action_mode = 0
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/HSplitContainerFood"]
-custom_minimum_size = Vector2(90, 100)
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerFood"]
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="foodHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/HSplitContainerFood/VSplitContainer"]
+[node name="foodHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerFood/VSplitContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -119,9 +144,60 @@ step = 50.0
 value = 50.0
 rounded = true
 
-[node name="foodLabel" type="Label" parent="MarginContainer/VSplitContainer/HSplitContainerFood/VSplitContainer"]
+[node name="foodLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerFood/VSplitContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "0"
 horizontal_alignment = 1
+
+[node name="HSplitContainerAntLifetime" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "Ant to follow : "
+label_settings = SubResource("LabelSettings_bjuw2")
+
+[node name="antToFollow" type="LineEdit" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bfyxp")
+context_menu_enabled = false
+emoji_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="HSplitContainerAntLifetime" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "Ant lifetime : "
+label_settings = SubResource("LabelSettings_bjuw2")
+
+[node name="antLifetime" type="LineEdit" parent="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bfyxp")
+context_menu_enabled = false
+emoji_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="infos" type="Label" parent="MarginContainer/VSplitContainer"]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 2
+label_settings = SubResource("LabelSettings_bfyxp")
+script = ExtResource("3_bjuw2")

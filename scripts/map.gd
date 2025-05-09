@@ -35,7 +35,7 @@ func generateMap():
 	var center = Vector2(160, 90)
 	var radius = 10
 
-	for x in 320:
+	for x in 319:
 		for y in 180:
 			var pos = Vector2(x, y)
 			var shapeNoise = fnl.get_noise_2d(x , y)
@@ -49,9 +49,7 @@ func generateMap():
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("restart_map"):
-		get_parent().get_tree().reload_current_scene()
-	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.position.x < 1280:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and get_global_mouse_position().x < 1280:
 		if event.pressed:
 			right_click_held = true
 			paint_mode = not paint_mode
@@ -59,8 +57,10 @@ func _input(event: InputEvent) -> void:
 			right_click_held = false
 
 	var width = 1.5
-	if event is InputEventMouseMotion and right_click_held and event.position.x < 1280 - width:
-		var cell : Vector2i = local_to_map(event.position)
+	if event is InputEventMouseMotion and right_click_held and get_global_mouse_position().x < 1280 - width:
+		var mouse_pos = get_global_mouse_position()
+		var cell : Vector2i = local_to_map(mouse_pos)
+		
 		if width == 1:
 			if paint_mode:
 				set_cell(cell, 0, Vector2i(0, 0))
