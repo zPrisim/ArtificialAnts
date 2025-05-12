@@ -6,6 +6,8 @@ extends CharacterBody2D
 @onready var centreSensor = $centre
 @onready var leftSensor = $leftAntenna
 
+@onready var animatedAntSprite = %antSprite
+
 @onready var closePheromone = $closePheromone
 @onready var vision = $antVision
 
@@ -44,6 +46,7 @@ var sensor_direction : Vector2 = Vector2(0,0)
 
 func _ready():
 	add_to_group("ant")
+	animatedAntSprite.play("movement")
 	currentState = STATE.SEARCHING
 	lifeTimer = Timer.new()
 	updateTimer = Timer.new()
@@ -132,13 +135,12 @@ func move(delta : float):
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))
 	
 	
-	
 	if currentState == STATE.SEARCHING && lastFood == null:
-		desiredDirection =  (desiredDirection + sensor_direction + (randomPoint * wanderStrength)).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction +(randomPoint * wanderStrength)).normalized()
 	elif currentState == STATE.SEARCHING && lastFood != null:
-		desiredDirection =  (desiredDirection + sensor_direction + (randomPoint * 0.05)).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction +(randomPoint * 0.05)).normalized()
 	elif currentState == STATE.RETURNING:
-		desiredDirection =  (desiredDirection + sensor_direction  + (randomPoint * 0.05)).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction +(randomPoint * 0.05)).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
@@ -211,8 +213,6 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 
 
 
-
-
 func isNear(pA : Array, n : Node2D) -> Vector2:
 	var minDist = 5000
 	var minVec = Vector2.ZERO
@@ -248,8 +248,7 @@ func handleAnthill(hill : Node2D):
 func _physics_process(delta: float) -> void:
 	move(delta)
 	
-	var result = move_and_slide()
-	if result:
+	if  move_and_slide():
 		var collider = get_last_slide_collision().get_collider()
 		if collider.is_in_group("foodRessource") and !hasFood:
 			handleFood(collider)
@@ -262,10 +261,13 @@ func _physics_process(delta: float) -> void:
 
 
 func _draw() -> void:
-	if currentState == STATE.RETURNING:
+	if currentState == STATE.SEARCHING and lastFood == null:
+		animatedAntSprite.modulate = Color("black")
+	elif currentState == STATE.RETURNING:
+		animatedAntSprite.modulate = Color("red")
 		draw_circle(Vector2(0, -5), 2.5, Color.GREEN, 3)
 	elif currentState == STATE.SEARCHING and lastFood != null:
-		draw_circle(Vector2(0, -5), 2.5, Color.YELLOW, 5)
+		animatedAntSprite.modulate = Color("blue")
 		
 """
 	draw_circle(rightSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)

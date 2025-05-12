@@ -124,7 +124,7 @@ func followAnt(antId: int) -> void:
 		camera.enabled = true
 		$Camera2D.enabled = false
 
-		camera.zoom = Vector2(2.5, 2.5) 
+		camera.zoom = Vector2(3.0, 3.0) 
 		antToFollow.add_child(camera)
 		followedAnt = antToFollow
 

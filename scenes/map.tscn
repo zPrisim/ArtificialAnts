@@ -18,6 +18,7 @@ tile_size = Vector2i(4, 4)
 physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 0
 physics_layer_0/physics_material = SubResource("PhysicsMaterial_4xfga")
+navigation_layer_0/layers = 1
 sources/0 = SubResource("TileSetAtlasSource_paxxb")
 
 [node name="TileMapLayer" type="TileMapLayer"]
