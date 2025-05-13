@@ -12,5 +12,4 @@ func _ready():
 	var body = StaticBody2D.new()
 	body.add_child(hitBox)
 	body.set_collision_layer_value(1,true)
-	body.set_collision_mask_value(3,true)
 	add_child(body) 

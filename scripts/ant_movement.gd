@@ -6,6 +6,10 @@ extends CharacterBody2D
 @onready var centreSensor = $centre
 @onready var leftSensor = $leftAntenna
 
+@onready var leftRayCast = $leftRayCast 
+@onready var rightRayCast = $rightRayCast
+@onready var frontRayCast = $frontRayCast
+
 @onready var animatedAntSprite = %antSprite
 
 @onready var closePheromone = $closePheromone
@@ -128,19 +132,48 @@ func _onTimerPheromoneSpawnTime():
 		get_parent().pheromones.append(p)
 		get_parent().add_child(p)
 		p.global_position = global_position
+
+
+
+func avoidObstacles() -> Vector2:
+	var avoidForce = Vector2.ZERO
+
+	if leftRayCast.is_colliding() and !rightRayCast.is_colliding():
+		avoidForce += transform.x * 0.5
+	elif rightRayCast.is_colliding() and !leftRayCast.is_colliding():
+		avoidForce -= transform.x * 0.5
+	elif rightRayCast.is_colliding() and leftRayCast.is_colliding():
+		avoidForce -= transform.y * 0.5
+
+	return avoidForce
+
+func alignParallelToFrontWall():
+	if frontRayCast.is_colliding():
+		var normal = frontRayCast.get_collision_normal()
+		# calcul d' un vecteur parallèle à l'obstacle
+		var parallelDirection = normal.rotated(PI / 2)  # ratation à 90° pour obtenir une direction parallèle
+		velocity = parallelDirection * maxSpeed  
+		rotation = atan2(velocity.y, velocity.x)  
+	else:
+		velocity = (velocity.normalized() * maxSpeed).limit_length(maxSpeed) 
+
+
+
 	
 func move(delta : float):
+	alignParallelToFrontWall()
 	var randomAngle = randf() * TAU
 	var randomRadius = sqrt(randf())
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))
-	
+
+	var avoidance = avoidObstacles()
 	
 	if currentState == STATE.SEARCHING && lastFood == null:
-		desiredDirection =  (desiredDirection + sensor_direction +(randomPoint * wanderStrength)).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction + avoidance + (randomPoint * wanderStrength)).normalized()
 	elif currentState == STATE.SEARCHING && lastFood != null:
-		desiredDirection =  (desiredDirection + sensor_direction +(randomPoint * 0.05)).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction + avoidance + (randomPoint * 0.05)).normalized()
 	elif currentState == STATE.RETURNING:
-		desiredDirection =  (desiredDirection + sensor_direction +(randomPoint * 0.05)).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction + avoidance + (randomPoint * 0.05)).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
@@ -149,11 +182,6 @@ func move(delta : float):
 	rotation = atan2(velocity.y, velocity.x) + PI / 2
 
 
-
-func TurnAround() -> void: # A modifier, les fourmis se bloquent
-	velocity = -velocity * 0.2 # on ralenti la vitesse
-	desiredDirection = velocity + Vector2((randf() - 0.5) *5,(randf() - 0.5)*5)
- 
 
 func sumArray(a : Array):
 	return a.filter(func(p): return p.type == Settings.types.FOOD).reduce(func(acc, p): return acc + p.value, 0.0)
@@ -188,7 +216,6 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 		if v != null:
 			return (v.global_position  - global_position).normalized()
 
-			#return (lastFood.global_position  - global_position).normalized()
 		elif lastFood != null:
 			return isNear(allPheromones, lastFood)
 		hadFood = false
@@ -245,6 +272,10 @@ func handleAnthill(hill : Node2D):
 	currentState = STATE.SEARCHING
 	hill.foodNumber += 1
 
+func TurnAround() -> void: # A modifier, les fourmis se bloquent
+	velocity = -velocity * 0.2 # on ralenti la vitesse
+	desiredDirection = velocity + Vector2((randf() - 0.5) *5,(randf() - 0.5)*5)
+
 func _physics_process(delta: float) -> void:
 	move(delta)
 	
@@ -252,12 +283,11 @@ func _physics_process(delta: float) -> void:
 		var collider = get_last_slide_collision().get_collider()
 		if collider.is_in_group("foodRessource") and !hasFood:
 			handleFood(collider)
+			TurnAround()
 		elif collider.is_in_group("antHill") and hasFood:
 			handleAnthill(collider)
-		TurnAround()
-		
+			TurnAround()
 		queue_redraw()
-
 
 
 func _draw() -> void:
@@ -268,9 +298,19 @@ func _draw() -> void:
 		draw_circle(Vector2(0, -5), 2.5, Color.GREEN, 3)
 	elif currentState == STATE.SEARCHING and lastFood != null:
 		animatedAntSprite.modulate = Color("blue")
-		
+
+	# debug
 """
-	draw_circle(rightSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
-	draw_circle(centreSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
-	draw_circle(leftSensor.position,$CollisionShape2D.shape.radius,Color.VIOLET,0)
+	var left_to = leftRayCast.target_position
+	draw_line(leftRayCast.position, leftRayCast.position + left_to.rotated(leftRayCast.rotation), Color.RED, 1)
+
+	var right_to = rightRayCast.target_position
+	draw_line(rightRayCast.position, rightRayCast.position + right_to.rotated(rightRayCast.rotation), Color.RED, 1)
+
+	var front_to = frontRayCast.target_position
+	draw_line(frontRayCast.position, frontRayCast.position + front_to.rotated(frontRayCast.rotation), Color.YELLOW, 1)
+
+	draw_circle(leftSensor.position, 4, Color.VIOLET)
+	draw_circle(centreSensor.position, 4, Color.VIOLET)
+	draw_circle(rightSensor.position, 4, Color.VIOLET)
 """	

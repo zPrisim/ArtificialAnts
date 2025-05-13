@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dcg2ahmlh80k" path="res://assets/images/pheromone.png" id="2_qs1xe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qs1xe"]
-size = Vector2(2, 2)
+size = Vector2(4, 4)
 
 [node name="pheromone" type="Area2D"]
 light_mask = 0
@@ -19,4 +19,5 @@ visibility_layer = 0
 shape = SubResource("RectangleShape2D_qs1xe")
 
 [node name="pheromoneSprite" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
 texture = ExtResource("2_qs1xe")

@@ -35,7 +35,7 @@ func generateMap():
 	var center = Vector2(160, 90)
 	var radius = 10
 
-	for x in 319:
+	for x in 320:
 		for y in 180:
 			var pos = Vector2(x, y)
 			var shapeNoise = fnl.get_noise_2d(x , y)
