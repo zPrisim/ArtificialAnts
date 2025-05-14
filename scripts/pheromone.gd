@@ -1,3 +1,4 @@
+class_name Pheromone
 extends Area2D
 
 @onready var sprite = $pheromoneSprite
@@ -5,25 +6,23 @@ extends Area2D
 
 var id
 var type : Settings.types
-var value : float
+var value : float = Settings.pheromoneBaseValue
 
-const homeValue = 10.0
-const foodValue = 20.0
 
-var baseOpacity = 1.0
+var baseOpacity := 1.0
 
 var deathTimer := Timer.new()
 var lifeTimer := Timer.new()
 
-var lifeTime = Settings.pheromoneLifTime
+var lifeTime := Settings.pheromoneLifeTime
+
+var lastPheromonePos := Vector2(0,0)
 
 func _ready():
 	add_to_group("pheromone")
 	if type == Settings.types.FOOD:
-		value = foodValue
 		sprite.self_modulate = Color(255,0,0)
 	else:
-		value = homeValue
 		sprite.self_modulate = Color(0,0,255)
 
 	if type == Settings.types.FOOD:
@@ -66,3 +65,8 @@ func _on_timer_deathTime():
 	get_parent().pheromones.erase(self)
 	get_parent().remove_child(self)
 	queue_free()
+
+"func _draw() -> void:
+	var from = Vector2.ZERO
+	var to = to_local(lastPheromonePos)
+	draw_line(from, to, Color.INDIGO, 1)"

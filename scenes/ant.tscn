@@ -47,7 +47,7 @@ motion_mode = 1
 slide_on_ceiling = false
 wall_min_slide_angle = 0.0
 platform_on_leave = 2
-platform_floor_layers = 4294967041
+platform_floor_layers = 4294967040
 script = ExtResource("1_5tacl")
 
 [node name="antSprite" type="AnimatedSprite2D" parent="."]
@@ -102,15 +102,13 @@ shape = SubResource("CircleShape2D_acg2n")
 [node name="leftRayCast" type="RayCast2D" parent="."]
 rotation = 0.785398
 target_position = Vector2(-20, 0)
-hit_from_inside = true
 
 [node name="rightRayCast" type="RayCast2D" parent="."]
 rotation = -0.785398
 target_position = Vector2(20, 0)
-hit_from_inside = true
 
 [node name="frontRayCast" type="RayCast2D" parent="."]
-target_position = Vector2(0, -5)
+target_position = Vector2(0, -10)
 
 [node name="antVision" type="Area2D" parent="."]
 collision_layer = 0
