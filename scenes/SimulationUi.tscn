@@ -63,18 +63,17 @@ dragger_visibility = 1
 [node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer"]
 layout_mode = 2
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+[node name="VSplitContainerButtons" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="HSplitContainerAnt" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+[node name="HSplitContainerAnt" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons"]
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="antButton" type="Button" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAnt"]
-unique_name_in_owner = true
+[node name="antButton" type="Button" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt"]
 custom_minimum_size = Vector2(90, 40)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -85,14 +84,13 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_bjuw2")
 theme_override_styles/normal = SubResource("StyleBoxTexture_gl5vq")
 action_mode = 0
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAnt"]
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt"]
 layout_mode = 2
 collapsed = true
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="antHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAnt/VSplitContainer"]
-unique_name_in_owner = true
+[node name="antHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/VSplitContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -100,7 +98,7 @@ min_value = 1.0
 value = 1.0
 rounded = true
 
-[node name="antLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAnt/VSplitContainer"]
+[node name="antLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/VSplitContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -109,14 +107,13 @@ size_flags_vertical = 0
 text = "0"
 horizontal_alignment = 1
 
-[node name="HSplitContainerFood" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+[node name="HSplitContainerFood" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons"]
 layout_direction = 4
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="foodButton" type="Button" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerFood"]
-unique_name_in_owner = true
+[node name="foodButton" type="Button" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood"]
 custom_minimum_size = Vector2(90, 40)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -128,12 +125,12 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_bfyxp")
 toggle_mode = true
 action_mode = 0
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerFood"]
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood"]
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="foodHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerFood/VSplitContainer"]
+[node name="foodHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood/VSplitContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -144,7 +141,7 @@ step = 50.0
 value = 50.0
 rounded = true
 
-[node name="foodLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerFood/VSplitContainer"]
+[node name="foodLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood/VSplitContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
@@ -152,20 +149,43 @@ size_flags_vertical = 0
 text = "0"
 horizontal_alignment = 1
 
-[node name="HSplitContainerAntLifetime" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="HSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="speedSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainer"]
+layout_mode = 2
+min_value = 0.25
+max_value = 5.0
+step = 0.25
+value = 1.0
+ticks_on_borders = true
+
+[node name="speedLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSplitContainerToFollow" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
+[node name="Label" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerToFollow"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "Ant to follow : "
 label_settings = SubResource("LabelSettings_bjuw2")
 
-[node name="antToFollow" type="LineEdit" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
-unique_name_in_owner = true
+[node name="antToFollow" type="LineEdit" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerToFollow"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -175,6 +195,7 @@ emoji_menu_enabled = false
 virtual_keyboard_enabled = false
 
 [node name="HSplitContainerAntLifetime" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer"]
+visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 dragging_enabled = false
@@ -201,3 +222,58 @@ custom_minimum_size = Vector2(200, 100)
 layout_mode = 2
 label_settings = SubResource("LabelSettings_bfyxp")
 script = ExtResource("3_bjuw2")
+
+[node name="MarginContainerMap" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 1280.0
+offset_top = 620.0
+offset_right = 1480.0
+offset_bottom = 712.0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainerMap"]
+layout_mode = 2
+dragging_enabled = false
+drag_area_highlight_in_editor = true
+
+[node name="HSplitContainerSavePreset" type="HSplitContainer" parent="MarginContainerMap/VSplitContainer"]
+layout_mode = 2
+dragging_enabled = false
+
+[node name="saveButton" type="Button" parent="MarginContainerMap/VSplitContainer/HSplitContainerSavePreset"]
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+text = "SAVE"
+
+[node name="loadButton" type="Button" parent="MarginContainerMap/VSplitContainer/HSplitContainerSavePreset"]
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+text = "LOAD"
+
+[node name="mapDropDownMenu" type="OptionButton" parent="MarginContainerMap/VSplitContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+alignment = 1
+selected = 0
+item_count = 6
+popup/item_0/text = "random"
+popup/item_0/id = 0
+popup/item_1/text = "preset 1"
+popup/item_1/id = 1
+popup/item_2/text = "preset2"
+popup/item_2/id = 2
+popup/item_3/text = "preset3"
+popup/item_3/id = 3
+popup/item_4/text = "preset4"
+popup/item_4/id = 4
+popup/item_5/text = "preset 5"
+popup/item_5/id = 5
+
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/antButton" to="." method="_on_ant_button_pressed"]
+[connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/VSplitContainer/antHSlider" to="." method="_on_ant_h_slider_value_changed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood/foodButton" to="." method="_on_food_button_pressed"]
+[connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood/VSplitContainer/foodHSlider" to="." method="_on_food_h_slider_value_changed"]
+[connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainer/speedSlider" to="." method="_on_speed_slider_value_changed"]
+[connection signal="text_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerToFollow/antToFollow" to="." method="_on_ant_to_follow_text_changed"]
+[connection signal="text_changed" from="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime/antLifetime" to="." method="_on_ant_lifetime_text_changed"]
+[connection signal="item_selected" from="MarginContainerMap/VSplitContainer/mapDropDownMenu" to="." method="_on_map_drop_down_menu_item_selected"]

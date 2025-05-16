@@ -96,7 +96,11 @@ func _onTimerPheromoneSpawnTime():
 	var pheromones = closePheromone.get_overlapping_areas()
 	for ph in pheromones:
 		var dist = global_position.distance_to(ph.global_position)
-		if dist <= randi() % 10 + 5: 
+		var minDistToPlace : int = 4
+		var maxDistToPlace : int = 8
+				
+		
+		if dist <= randi() % maxDistToPlace + minDistToPlace: 
 			existingPheromone = ph
 			break
 
@@ -185,20 +189,7 @@ func sumArray(a : Array):
 
 
 func handlePheromoneSensors( t : Settings.types) -> Vector2:
-	if t == Settings.types.FOOD:
-		leftSensor.set_collision_mask_value(5, true)
-		leftSensor.set_collision_mask_value(6, false)
-		centreSensor.set_collision_mask_value(5, true)
-		centreSensor.set_collision_mask_value(6, false)
-		rightSensor.set_collision_mask_value(5, true)
-		rightSensor.set_collision_mask_value(6, false)
-	else:
-		leftSensor.set_collision_mask_value(5, false)
-		leftSensor.set_collision_mask_value(6, true)
-		centreSensor.set_collision_mask_value(5, false)
-		centreSensor.set_collision_mask_value(6, true)
-		rightSensor.set_collision_mask_value(5, false)
-		rightSensor.set_collision_mask_value(6, true)		
+	updateSensorCollisionMasks(t)	
 
 	var leftPheromones = leftSensor.sensor()
 	var centrePheromones = centreSensor.sensor()
@@ -208,34 +199,40 @@ func handlePheromoneSensors( t : Settings.types) -> Vector2:
 	if currentState == STATE.SEARCHING:
 		set_collision_mask_value(3, true)
 		set_collision_mask_value(2, false)
-
-		var v = vision.sensor("foodRessource") 
-		if v != null:
-			return (v.global_position  - global_position).normalized()
+		var dir : Vector2 = Vector2(0,0)
+		var visibleObj = vision.sensor("foodRessource") 
+		if visibleObj != null:
+			return (visibleObj.global_position  - global_position).normalized()
 		if lastFood != null:
-			return isNear(allPheromones,lastFood)
+			dir += isNear(allPheromones,lastFood)
 		
 		hadFood = false
 		var sumLeft = sumArray(leftPheromones)
 		var sumCentre = sumArray(centrePheromones)
 		var sumRight = sumArray(rightPheromones)
 		if sumCentre > max(sumLeft,sumRight):
-			return (centreSensor.global_position - global_position).normalized()
+			return (centreSensor.global_position - global_position).normalized() + dir
 		elif sumLeft > sumRight:
-			return (leftSensor.global_position - global_position).normalized()
+			return (leftSensor.global_position - global_position).normalized() + dir
 		elif sumRight > sumLeft:
-			return (rightSensor.global_position - global_position).normalized()
+			return (rightSensor.global_position - global_position).normalized() + dir
 	elif currentState == STATE.RETURNING:
 		set_collision_mask_value(3, false)
 		set_collision_mask_value(2, true)
 
-		var v = vision.sensor("antHill") 
-		if v != null:
-			return (v.global_position  - global_position).normalized()
+		var visibleObj = vision.sensor("antHill") 
+		if visibleObj != null:
+			return (visibleObj.global_position  - global_position).normalized()
 		return isNear(allPheromones,anthill)
 	return Vector2(0,0)
 
-
+func updateSensorCollisionMasks(t: Settings.types):
+	leftSensor.set_collision_mask_value(5, t)
+	leftSensor.set_collision_mask_value(6, !t)
+	centreSensor.set_collision_mask_value(5, t)
+	centreSensor.set_collision_mask_value(6, !t)
+	rightSensor.set_collision_mask_value(5, t)
+	rightSensor.set_collision_mask_value(6, !t)
 
 func isNear(pA : Array, n : Node2D) -> Vector2:
 	var minDist = 5000
@@ -274,8 +271,10 @@ func handleAnthill(hill : Node2D):
 
 
 func TurnAround() -> void: # A modifier, les fourmis se bloquent
-	velocity = -velocity * 0.2 # on ralenti la vitesse
-	desiredDirection = velocity 
+	# Inverse la direction avec une force marquée
+	desiredDirection = -desiredDirection.normalized()
+	velocity = desiredDirection * maxSpeed * 0.5  # redémarre à moitié de la vitesse max
+
 
 func _physics_process(delta: float) -> void:
 	move(delta)
@@ -295,10 +294,10 @@ func _draw() -> void:
 	if currentState == STATE.SEARCHING and lastFood == null:
 		animatedAntSprite.modulate = Color("black")
 	elif currentState == STATE.RETURNING:
-		animatedAntSprite.modulate = Color("red")
-		draw_circle(Vector2(0, -5), 2.5, Color.GREEN, 3)
+		animatedAntSprite.modulate = Color("green")
+		draw_circle(Vector2(0, -5), 2.5, Color.GREEN, 0.1)
 	elif currentState == STATE.SEARCHING and lastFood != null:
-		animatedAntSprite.modulate = Color("blue")
+		animatedAntSprite.modulate = Color("yellow")
 
 	# debug
 """

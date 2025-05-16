@@ -1,3 +1,4 @@
+class_name Anthill
 extends StaticBody2D
 
 @onready var antHillCollision = $antHillCollision

@@ -3,9 +3,9 @@ extends Node2D
 @onready var ant = preload("res://scenes/ant.tscn")
 @onready var food = preload("res://scenes/food.tscn")
 @onready var pheromone = preload("res://scenes/pheromone.tscn")
-@onready var map = preload("res://scenes/map.tscn")
+@onready var mapManager = preload("res://scenes/mapManager.tscn")
 @onready var simulationUI = preload("res://scenes/SimulationUi.tscn")
-@onready var antHill = $antHill
+@onready var antHill : Anthill = $antHill
 var UI : Control
 
 var ants : Array
@@ -44,8 +44,8 @@ func _ready():
 	
 	add_child(antTimer)
 
-	var instMap = map.instantiate()
-	add_child(instMap)
+	var instMapManager= mapManager.instantiate()
+	add_child(instMapManager)
 	antHill.position =	Settings.antHillPos
 	
 	antTimer.start(antSpawnTime)
@@ -70,8 +70,8 @@ func _ready():
 func _on_timer_check():
 	#print_orphan_nodes()
 	if  antHill.foodNumber - lastFoodNumber > 10:
-		var numberToSpawn = (antHill.foodNumber - int(lastFoodNumber))/ Settings.numberOfFoodToSpawnAnts
-		ants_around_anthill(antHill.global_position, 25.0,ant,numberToSpawn,0.0)
+		var numberToSpawn: int = (antHill.foodNumber - int(lastFoodNumber))/ Settings.numberOfFoodToSpawnAnts
+		ants_around_anthill(antHill.global_position, 25.0,ant,numberToSpawn, randf_range(-PI, + PI))
 		lastFoodNumber = antHill.foodNumber
 	for a in toBeDeadAnts:
 		if !a.hasFood && a.get_parent() == self: # a.hasFood ou lastFood != null?
@@ -81,13 +81,13 @@ func _on_timer_check():
 	toBeDeadAnts = []
 
 
-func _on_ant_button_pressed():
-	ants_around_anthill(antHill.global_position, 25.0,ant,UI.antSlider.value,0.0)
+func _on_ant_button_pressed(value):
+	ants_around_anthill(antHill.global_position, 25.0,ant,value,0.0)
 
-
-func _on_food_button_pressed():
+var lastUIFoodSize := 0
+func _on_food_button_pressed(value):
 	canPlaceFood = !canPlaceFood
-
+	lastUIFoodSize = value
 func _input(event):
 	if event.is_action_pressed("restart_map"):
 		get_tree().reload_current_scene()
@@ -103,7 +103,7 @@ func _input(event):
 							remove_child(f)
 							foods.erase(f)
 							return
-					spawn_food_source(mouse_pos, UI.foodSlider.value)
+					spawn_food_source(mouse_pos, lastUIFoodSize)
 
 				#elif event.button_index == MOUSE_BUTTON_RIGHT:
 				
