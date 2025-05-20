@@ -2,7 +2,6 @@ class_name MapManager
 extends Node2D
 
 var right_click_held := false
-var paint_mode := true
 
 @export var mapArray : Array[TileMapLayer]
 var activeMapPreset : TileMapLayer 
@@ -20,30 +19,30 @@ func _on_map_changed(index):
 	Settings.mapPresetIndex = index
 	get_tree().reload_current_scene()
 	
+	
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and get_global_mouse_position().x < 1280:
-		if event.pressed:
-			right_click_held = true
-			paint_mode = not paint_mode
-		else:
-			right_click_held = false
+	if !Settings.isZoomed:
+		if !get_tree().get_root().get_node("Simulation").canPlaceFood:	
+			var mouse_pos = get_global_mouse_position()
+			var cell : Vector2i = activeMapPreset.local_to_map(mouse_pos)
+			var width = Settings.mapPaintSize  
 
-	var width = 1.5
-	if event is InputEventMouseMotion and right_click_held and get_global_mouse_position().x < 1280 - width:
-		var mouse_pos = get_global_mouse_position()
-		var cell : Vector2i = activeMapPreset.local_to_map(mouse_pos)
-		
-		if width == 1:
-			if paint_mode:
-				activeMapPreset.set_cell(cell, 0, Vector2i(0, 0))
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and mouse_pos.x < 1280:
+				Settings.paintMode = not Settings.paintMode
+				return  
+
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and mouse_pos.x < 1280:
+				paint(cell, width)
+
+			if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and mouse_pos.x < 1280:
+				paint(cell, width)
+
+func paint(cell: Vector2i, width: int) -> void:
+	for i in range(-width, width + 1):
+		for j in range(-width, width + 1):
+			var target_cell = cell + Vector2i(i, j)
+			if Settings.paintMode:
+				activeMapPreset.set_cell(target_cell, 0, Vector2i(0, 0))
 			else:
-				activeMapPreset.erase_cell(cell)
-		else:
-			for i in range(-width, width):
-				for j in range(-width, width):
-					var target_cell = cell + Vector2i(i, j)
-					if paint_mode:
-						activeMapPreset.set_cell(target_cell, 0, Vector2i(0, 0))
-					else:
-						activeMapPreset.erase_cell(target_cell)
+				activeMapPreset.erase_cell(target_cell)

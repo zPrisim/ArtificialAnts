@@ -172,9 +172,9 @@ func move(delta : float):
 	if currentState == STATE.SEARCHING && lastFood == null:
 		desiredDirection =  (desiredDirection + sensor_direction + avoidance + (randomPoint * wanderStrength)).normalized()
 	elif currentState == STATE.SEARCHING && lastFood != null:
-		desiredDirection =  (desiredDirection + sensor_direction *5+ avoidance + (randomPoint * 0.05)).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction *5+ avoidance + (randomPoint * wanderStrength)).normalized()
 	elif currentState == STATE.RETURNING:
-		desiredDirection =  (desiredDirection + sensor_direction *5+ avoidance + (randomPoint * 0.05)).normalized()
+		desiredDirection =  (desiredDirection + sensor_direction *5+ avoidance + (randomPoint * wanderStrength)).normalized()
 
 	desiredVelocity = desiredDirection * maxSpeed
 	desiredSteeringForce = (desiredVelocity - velocity) * steerStrength
@@ -279,7 +279,7 @@ func TurnAround() -> void: # A modifier, les fourmis se bloquent
 func _physics_process(delta: float) -> void:
 	move(delta)
 	
-	if  move_and_slide():
+	if move_and_slide():
 		var collider = get_last_slide_collision().get_collider()
 		if collider.is_in_group("foodRessource") and !hasFood:
 			handleFood(collider)

@@ -1,8 +1,11 @@
 extends Label
 
-var counter: float
+var counter: float = 0
+
 func _process(delta):
-	counter += delta
+	var timePassed = get_tree().get_root().get_node("Simulation").startTime
+	if timePassed != 0:
+		counter += delta
 
 	set("theme_override_colors/font_color", Color.WHITE)
 	text = ""
@@ -16,5 +19,8 @@ func _process(delta):
 		if f:
 			sumFood += f.foodValue
 	text += "\nFood : " + str(sumFood)
-	text += "\nReal Time : " + str("%0.2f" % (Time.get_unix_time_from_system() -  get_tree().get_root().get_node("Simulation").startTime))
-	text += "\nTime in simulation: " + str("%0.2f" % counter)
+	if timePassed == 0: 
+		text += "\nReal Time : " + str("%0.2f" % (timePassed ))
+	else:
+		text += "\nReal Time : " + str("%0.2f" % (Time.get_unix_time_from_system() - timePassed ))
+	text += "\nSimulation Time: " + str("%0.2f" % counter)

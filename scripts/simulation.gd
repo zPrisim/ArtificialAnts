@@ -26,6 +26,7 @@ var canPlaceFood := false
 
 var followedAnt: Node2D
 
+var lastUIFoodSize := 50
 
 
 func _ready():
@@ -35,9 +36,7 @@ func _ready():
 	layer.add_child(UI)
 	add_child(layer)
 	
-	startTime = Time.get_unix_time_from_system()
 	UI.ant_button_pressed.connect(_on_ant_button_pressed)
-	UI.food_button_pressed.connect(_on_food_button_pressed)
 	antTimer = Timer.new()
 
 	antTimer.connect("timeout", _on_timer_check)	
@@ -46,7 +45,14 @@ func _ready():
 
 	var instMapManager= mapManager.instantiate()
 	add_child(instMapManager)
-	antHill.position =	Settings.antHillPos
+	
+	var mapSettings := Settings.getMapSettings()
+	if mapSettings == []:
+		antHill.position = Settings.antHillPos
+	else:
+		antHill.position =	mapSettings[0]
+		for i in range(1,mapSettings.size()):
+			spawnFoodSource(mapSettings[i],Settings.defaultFoodSize)
 	
 	antTimer.start(antSpawnTime)
 	
@@ -60,19 +66,22 @@ func _ready():
 	instMapPheromoneFood.type = Settings.types.FOOD
 	add_child(instMapPheromoneFood)
 """
-	#spawn_food_source(Vector2(500,500), 25)
-	#spawn_food_source(Vector2(50,50), 25)
-	#spawn_food_source(Vector2(900,300), 25)
-	#spawn_food_source(Vector2(1100,600), 25)
+	#spawnFoodSource(Vector2(500,500), 25)
+	#spawnFoodSource(Vector2(50,50), 25)
+	#spawnFoodSource(Vector2(900,300), 25)
+	#spawnFoodSource(Vector2(1100,600), 25)
 
 	#ants_around_anthill(25.0,ant,antNumber,0.0)
 
 func _on_timer_check():
-	#print_orphan_nodes()
-	if  antHill.foodNumber - lastFoodNumber > 10:
-		var numberToSpawn: int = (antHill.foodNumber - int(lastFoodNumber))/ Settings.numberOfFoodToSpawnAnts
+	var numberToSpawn : int
+	if antHill.foodNumber - lastFoodNumber > 10:
+		numberToSpawn = (antHill.foodNumber - int(lastFoodNumber))/ Settings.numberOfFoodToSpawnAnts
+		
+	if  Settings.antReproduction:
 		ants_around_anthill(antHill.global_position, 25.0,ant,numberToSpawn, randf_range(-PI, + PI))
-		lastFoodNumber = antHill.foodNumber
+	
+	lastFoodNumber = antHill.foodNumber
 	for a in toBeDeadAnts:
 		if !a.hasFood && a.get_parent() == self: # a.hasFood ou lastFood != null?
 			ants.erase(a)
@@ -82,31 +91,29 @@ func _on_timer_check():
 
 
 func _on_ant_button_pressed(value):
+	if startTime == 0:
+		startTime = Time.get_unix_time_from_system()
+
 	ants_around_anthill(antHill.global_position, 25.0,ant,value,0.0)
 
-var lastUIFoodSize := 0
-func _on_food_button_pressed(value):
-	canPlaceFood = !canPlaceFood
-	lastUIFoodSize = value
 func _input(event):
 	if event.is_action_pressed("restart_map"):
 		get_tree().reload_current_scene()
+		Settings.isZoomed = false
 
-	if event is InputEventMouseButton and event.is_pressed():
-		var mouse_pos = get_global_mouse_position()
-		if mouse_pos.x < 1280 and mouse_pos.y < 720:
-			if event.button_index == MOUSE_BUTTON_LEFT:
-				if canPlaceFood:
-					for f in foods:
-						if f.global_position.distance_to(mouse_pos) <= f.radius:
-							f.queue_free()
-							remove_child(f)
-							foods.erase(f)
-							return
-					spawn_food_source(mouse_pos, lastUIFoodSize)
-
-				#elif event.button_index == MOUSE_BUTTON_RIGHT:
-				
+	if !Settings.isZoomed:
+		if event is InputEventMouseButton and event.is_pressed():
+			var mousePos = get_global_mouse_position()
+			if mousePos.x < 1280 and mousePos.y < 720:
+				if event.button_index == MOUSE_BUTTON_LEFT:
+					if canPlaceFood:
+						for f in foods:
+							if f.global_position.distance_to(mousePos) <= f.radius:
+								f.queue_free()
+								remove_child(f)
+								foods.erase(f)
+								return
+						spawnFoodSource(mousePos, lastUIFoodSize)
 
 
 
@@ -117,6 +124,8 @@ func followAnt(antId: int) -> void:
 			if child is Camera2D:
 				$Camera2D.enabled = true
 				child.queue_free()
+		Settings.isZoomed = false
+
 	if antId >= 0 and antId < ants.size():
 		var antToFollow = ants[antId]
 		
@@ -127,10 +136,9 @@ func followAnt(antId: int) -> void:
 		camera.zoom = Vector2(3.0, 3.0) 
 		antToFollow.add_child(camera)
 		followedAnt = antToFollow
+		Settings.isZoomed = true
 
-
-
-func spawn_food_source(pos : Vector2, v : float):
+func spawnFoodSource(pos : Vector2, v : float):
 	var instFood = food.instantiate()
 	instFood.radius = 25.0
 	instFood.position = pos

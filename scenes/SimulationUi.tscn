@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://1bbtupm77dcp"]
+[gd_scene load_steps=17 format=3 uid="uid://1bbtupm77dcp"]
 
 [ext_resource type="Texture2D" uid="uid://ci1crv5rcfohs" path="res://assets/images/Button.png" id="1_g5bxd"]
 [ext_resource type="Script" uid="uid://cpqjlcj0gkfgg" path="res://scripts/simulation_ui.gd" id="1_gl5vq"]
@@ -29,9 +29,24 @@ font_size = 14
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bfyxp"]
 
+[sub_resource type="Theme" id="Theme_bjuw2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_efncr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3g0mi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bjuw2"]
+draw_center = false
+border_width_top = 1
+border_width_bottom = 1
+expand_margin_left = 5.0
+
 [sub_resource type="LabelSettings" id="LabelSettings_bfyxp"]
 
 [node name="SimulationUi" type="Control"]
+top_level = true
+light_mask = 0
+z_index = 1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -58,7 +73,6 @@ dragger_visibility = 2
 [node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer"]
 layout_mode = 2
 dragging_enabled = false
-dragger_visibility = 1
 
 [node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer"]
 layout_mode = 2
@@ -195,7 +209,6 @@ emoji_menu_enabled = false
 virtual_keyboard_enabled = false
 
 [node name="HSplitContainerAntLifetime" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer"]
-visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 dragging_enabled = false
@@ -217,9 +230,35 @@ context_menu_enabled = false
 emoji_menu_enabled = false
 virtual_keyboard_enabled = false
 
-[node name="infos" type="Label" parent="MarginContainer/VSplitContainer"]
+[node name="VSplitContainer2" type="VSplitContainer" parent="MarginContainer/VSplitContainer"]
+layout_mode = 2
+dragging_enabled = false
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer2"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="reproductionCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = SubResource("Theme_bjuw2")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/focus = SubResource("StyleBoxEmpty_efncr")
+text = "Reproduction"
+icon_alignment = 2
+
+[node name="seedCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3g0mi")
+button_pressed = true
+text = "Seed change"
+
+[node name="infos" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer2"]
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_bjuw2")
 label_settings = SubResource("LabelSettings_bfyxp")
 script = ExtResource("3_bjuw2")
 
@@ -228,26 +267,36 @@ layout_mode = 0
 offset_left = 1280.0
 offset_top = 620.0
 offset_right = 1480.0
-offset_bottom = 712.0
+offset_bottom = 720.0
 
 [node name="VSplitContainer" type="VSplitContainer" parent="MarginContainerMap"]
 layout_mode = 2
 dragging_enabled = false
+dragger_visibility = 2
 drag_area_highlight_in_editor = true
 
-[node name="HSplitContainerSavePreset" type="HSplitContainer" parent="MarginContainerMap/VSplitContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainerMap/VSplitContainer"]
+layout_mode = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainerMap/VSplitContainer/HSplitContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 dragging_enabled = false
+dragger_visibility = 2
 
-[node name="saveButton" type="Button" parent="MarginContainerMap/VSplitContainer/HSplitContainerSavePreset"]
-custom_minimum_size = Vector2(90, 40)
+[node name="paintBrushSize" type="HSlider" parent="MarginContainerMap/VSplitContainer/HSplitContainer/VSplitContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "SAVE"
+size_flags_vertical = 1
+min_value = 1.0
+max_value = 10.0
+step = 0.5
+value = 1.0
+scrollable = false
 
-[node name="loadButton" type="Button" parent="MarginContainerMap/VSplitContainer/HSplitContainerSavePreset"]
-custom_minimum_size = Vector2(90, 40)
+[node name="paintBrushLabel" type="Label" parent="MarginContainerMap/VSplitContainer/HSplitContainer/VSplitContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "LOAD"
 
 [node name="mapDropDownMenu" type="OptionButton" parent="MarginContainerMap/VSplitContainer"]
 unique_name_in_owner = true
@@ -255,10 +304,10 @@ custom_minimum_size = Vector2(90, 40)
 layout_mode = 2
 alignment = 1
 selected = 0
-item_count = 6
+item_count = 5
 popup/item_0/text = "random"
 popup/item_0/id = 0
-popup/item_1/text = "preset 1"
+popup/item_1/text = "preset1"
 popup/item_1/id = 1
 popup/item_2/text = "preset2"
 popup/item_2/id = 2
@@ -266,8 +315,6 @@ popup/item_3/text = "preset3"
 popup/item_3/id = 3
 popup/item_4/text = "preset4"
 popup/item_4/id = 4
-popup/item_5/text = "preset 5"
-popup/item_5/id = 5
 
 [connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/antButton" to="." method="_on_ant_button_pressed"]
 [connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/VSplitContainer/antHSlider" to="." method="_on_ant_h_slider_value_changed"]
@@ -276,4 +323,7 @@ popup/item_5/id = 5
 [connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainer/speedSlider" to="." method="_on_speed_slider_value_changed"]
 [connection signal="text_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerToFollow/antToFollow" to="." method="_on_ant_to_follow_text_changed"]
 [connection signal="text_changed" from="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime/antLifetime" to="." method="_on_ant_lifetime_text_changed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer/reproductionCheckBox" to="." method="_on_reproduction_check_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer/seedCheckBox" to="." method="_on_seed_check_box_pressed"]
+[connection signal="value_changed" from="MarginContainerMap/VSplitContainer/HSplitContainer/VSplitContainer/paintBrushSize" to="." method="_on_paint_brush_size_value_changed"]
 [connection signal="item_selected" from="MarginContainerMap/VSplitContainer/mapDropDownMenu" to="." method="_on_map_drop_down_menu_item_selected"]

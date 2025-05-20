@@ -36,7 +36,7 @@ radius = 6.9814
 radius = 51.0098
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dy442"]
-radius = 14.1421
+radius = 9.05539
 
 [node name="ant" type="CharacterBody2D"]
 light_mask = 0
@@ -111,7 +111,8 @@ rotation = -0.785398
 target_position = Vector2(20, 0)
 
 [node name="frontRayCast" type="RayCast2D" parent="."]
-target_position = Vector2(0, -10)
+scale = Vector2(0.5, 1)
+target_position = Vector2(0, -8)
 
 [node name="antVision" type="Area2D" parent="."]
 collision_layer = 0
