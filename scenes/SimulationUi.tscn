@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://1bbtupm77dcp"]
+[gd_scene load_steps=18 format=3 uid="uid://1bbtupm77dcp"]
 
 [ext_resource type="Texture2D" uid="uid://ci1crv5rcfohs" path="res://assets/images/Button.png" id="1_g5bxd"]
 [ext_resource type="Script" uid="uid://cpqjlcj0gkfgg" path="res://scripts/simulation_ui.gd" id="1_gl5vq"]
@@ -43,6 +43,8 @@ expand_margin_left = 5.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_bfyxp"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ff8jr"]
+
 [node name="SimulationUi" type="Control"]
 top_level = true
 light_mask = 0
@@ -57,13 +59,10 @@ grow_vertical = 2
 script = ExtResource("1_gl5vq")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -200.0
-offset_bottom = 140.0
-grow_horizontal = 0
+layout_mode = 0
+offset_left = 1280.0
+offset_right = 1480.0
+offset_bottom = 380.0
 
 [node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -149,10 +148,10 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-min_value = 50.0
-max_value = 1000.0
-step = 50.0
-value = 50.0
+min_value = 100.0
+max_value = 2000.0
+step = 100.0
+value = 100.0
 rounded = true
 
 [node name="foodLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood/VSplitContainer"]
@@ -214,7 +213,7 @@ layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
+[node name="antLifeTimeLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "Ant lifetime : "
@@ -265,26 +264,41 @@ script = ExtResource("3_bjuw2")
 [node name="MarginContainerMap" type="MarginContainer" parent="."]
 layout_mode = 0
 offset_left = 1280.0
-offset_top = 620.0
+offset_top = 578.0
 offset_right = 1480.0
 offset_bottom = 720.0
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainerMap"]
+[node name="VSplitContainer2" type="VSplitContainer" parent="MarginContainerMap"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="paintButton" type="Button" parent="MarginContainerMap/VSplitContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ff8jr")
+toggle_mode = true
+text = "Paint mode"
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainerMap/VSplitContainer2"]
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 drag_area_highlight_in_editor = true
 
-[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainerMap/VSplitContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainerMap/VSplitContainer2/VSplitContainer"]
 layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainerMap/VSplitContainer/HSplitContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainerMap/VSplitContainer2/VSplitContainer/HSplitContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="paintBrushSize" type="HSlider" parent="MarginContainerMap/VSplitContainer/HSplitContainer/VSplitContainer"]
+[node name="paintBrushSize" type="HSlider" parent="MarginContainerMap/VSplitContainer2/VSplitContainer/HSplitContainer/VSplitContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 1
@@ -294,17 +308,17 @@ step = 0.5
 value = 1.0
 scrollable = false
 
-[node name="paintBrushLabel" type="Label" parent="MarginContainerMap/VSplitContainer/HSplitContainer/VSplitContainer"]
+[node name="paintBrushLabel" type="Label" parent="MarginContainerMap/VSplitContainer2/VSplitContainer/HSplitContainer/VSplitContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="mapDropDownMenu" type="OptionButton" parent="MarginContainerMap/VSplitContainer"]
+[node name="mapDropDownMenu" type="OptionButton" parent="MarginContainerMap/VSplitContainer2/VSplitContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(90, 40)
 layout_mode = 2
 alignment = 1
 selected = 0
-item_count = 5
+item_count = 6
 popup/item_0/text = "random"
 popup/item_0/id = 0
 popup/item_1/text = "preset1"
@@ -315,6 +329,8 @@ popup/item_3/text = "preset3"
 popup/item_3/id = 3
 popup/item_4/text = "preset4"
 popup/item_4/id = 4
+popup/item_5/text = "preset5"
+popup/item_5/id = 5
 
 [connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/antButton" to="." method="_on_ant_button_pressed"]
 [connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/VSplitContainer/antHSlider" to="." method="_on_ant_h_slider_value_changed"]
@@ -325,5 +341,6 @@ popup/item_4/id = 4
 [connection signal="text_changed" from="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime/antLifetime" to="." method="_on_ant_lifetime_text_changed"]
 [connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer/reproductionCheckBox" to="." method="_on_reproduction_check_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer/seedCheckBox" to="." method="_on_seed_check_box_pressed"]
-[connection signal="value_changed" from="MarginContainerMap/VSplitContainer/HSplitContainer/VSplitContainer/paintBrushSize" to="." method="_on_paint_brush_size_value_changed"]
-[connection signal="item_selected" from="MarginContainerMap/VSplitContainer/mapDropDownMenu" to="." method="_on_map_drop_down_menu_item_selected"]
+[connection signal="pressed" from="MarginContainerMap/VSplitContainer2/paintButton" to="." method="_on_paint_button_pressed"]
+[connection signal="value_changed" from="MarginContainerMap/VSplitContainer2/VSplitContainer/HSplitContainer/VSplitContainer/paintBrushSize" to="." method="_on_paint_brush_size_value_changed"]
+[connection signal="item_selected" from="MarginContainerMap/VSplitContainer2/VSplitContainer/mapDropDownMenu" to="." method="_on_map_drop_down_menu_item_selected"]

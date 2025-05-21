@@ -15,24 +15,26 @@ signal map_changed
 @onready var reproductionCheckBox = %reproductionCheckBox
 @onready var seedCheckBox = %seedCheckBox
 
-
+@onready var paintButton = %paintButton
 @onready var mapMenu = %mapDropDownMenu
 
 var foodButtonActive := false
 var antNumber := 1
-var foodSize := 50.0
+var foodSize := 100.0
 
 
 func _ready():
 	mapMenu.select(Settings.mapPresetIndex)
-	antLabel.text = str(1)
-	foodLabel.text = str(50)
+	antLabel.text = str(antNumber)
+	foodLabel.text = str(foodSize)
 	speedLabel.text = "Speed : " + str(1)
 	paintBrushLabel.text =  "Paint size : " + str(Settings.mapPaintSize)
 	antLifetime.text = str(Settings.antLifeTime)
+	paintBrushSize.value = Settings.mapPaintSize
 
 	reproductionCheckBox.button_pressed = Settings.antReproduction
 	seedCheckBox.button_pressed = Settings.seedChange
+	paintButton.button_pressed = Settings.isPaint
 	
 	if Settings.mapPresetIndex != 0:
 		seedCheckBox.visible = false
@@ -50,6 +52,8 @@ func _on_ant_button_pressed():
 
 func _on_food_button_pressed():
 	foodButtonActive = true
+	Settings.isPaint = false
+	paintButton.disabled = ! paintButton.disabled
 	get_tree().get_root().get_node("Simulation").canPlaceFood = !get_tree().get_root().get_node("Simulation").canPlaceFood 
 
 func _on_food_h_slider_value_changed(value: float) -> void:
@@ -86,7 +90,7 @@ func _on_seed_check_box_pressed() -> void:
 
 func _on_reproduction_check_button_pressed() -> void:
 	Settings.antReproduction = !Settings.antReproduction
-
+	
 
 
 func _on_paint_brush_size_value_changed(value: float) -> void:
@@ -95,7 +99,7 @@ func _on_paint_brush_size_value_changed(value: float) -> void:
 
 
 func _input(event: InputEvent) -> void:	
-	if !Settings.isZoomed:
+	if !Settings.isZoomed && Settings.isPaint:
 
 		if Settings.mapPaintSize < 1:
 			Settings.mapPaintSize = 1
@@ -110,25 +114,25 @@ func _input(event: InputEvent) -> void:
 		paintBrushLabel.text = "Paint size : " + str(Settings.mapPaintSize)
 		paintBrushSize.value = Settings.mapPaintSize
 
+func _on_paint_button_pressed() -> void:
+	Settings.isPaint = !Settings.isPaint
+	Settings.paintMode = true
 func _process(_delta: float) -> void:
 	queue_redraw()
 
 func _draw() -> void:
 	draw_rect(Rect2(1276, 0, 204.0, 720.0), Color.DIM_GRAY, true)	
-	if !Settings.isZoomed:
+	
+	if !Settings.isZoomed && Settings.isPaint:
 		var mousePos = get_global_mouse_position()
 		if !get_tree().get_root().get_node("Simulation").canPlaceFood:
 			var paintSize = Settings.mapPaintSize
 			var tileSize = 4
-		
-			var cellsWide = int(paintSize) * 2 + 1
-			var pixelSize = Vector2(cellsWide, cellsWide) * tileSize
-			
-			var topLeft = mousePos - pixelSize / 2.0
-			if mousePos.x < 1280 - pixelSize.x/2 :
-				if Settings.paintMode:
-					draw_rect(Rect2(topLeft, pixelSize), "8f563b", true)
-					draw_rect(Rect2(topLeft, pixelSize), Color.BLACK, false)
 
+			var radius = paintSize * tileSize
+			if mousePos.x < 1280 - radius:
+				if Settings.paintMode:
+					draw_circle(mousePos, radius, Color("#8f563b"))
+					draw_circle(mousePos, radius, Color.BLACK, false)
 				else:
-					draw_rect(Rect2(topLeft, pixelSize), Color.WHITE, false)
+					draw_circle(mousePos, radius, Color.WHITE, false)
