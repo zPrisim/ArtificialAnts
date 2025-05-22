@@ -46,6 +46,7 @@ expand_margin_left = 5.0
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ff8jr"]
 
 [node name="SimulationUi" type="Control"]
+process_mode = 3
 top_level = true
 light_mask = 0
 z_index = 1
@@ -177,7 +178,7 @@ dragger_visibility = 2
 [node name="speedSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainer"]
 layout_mode = 2
 min_value = 0.25
-max_value = 5.0
+max_value = 3.0
 step = 0.25
 value = 1.0
 ticks_on_borders = true
@@ -232,14 +233,28 @@ virtual_keyboard_enabled = false
 [node name="VSplitContainer2" type="VSplitContainer" parent="MarginContainer/VSplitContainer"]
 layout_mode = 2
 dragging_enabled = false
+dragger_visibility = 2
 
-[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer2"]
+[node name="viewPheromonesCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "View pheromones"
+
+[node name="VSplitContainer2" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer2"]
 layout_mode = 2
 dragging_enabled = false
 dragger_visibility = 2
 
-[node name="reproductionCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="reproductionCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2/VSplitContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 theme = SubResource("Theme_bjuw2")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -247,14 +262,15 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_efncr")
 text = "Reproduction"
 icon_alignment = 2
 
-[node name="seedCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer"]
+[node name="seedCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2/VSplitContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 theme_override_styles/focus = SubResource("StyleBoxEmpty_3g0mi")
 button_pressed = true
 text = "Seed change"
 
-[node name="infos" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer2"]
+[node name="infos" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2"]
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_bjuw2")
@@ -339,8 +355,9 @@ popup/item_5/id = 5
 [connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainer/speedSlider" to="." method="_on_speed_slider_value_changed"]
 [connection signal="text_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerToFollow/antToFollow" to="." method="_on_ant_to_follow_text_changed"]
 [connection signal="text_changed" from="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime/antLifetime" to="." method="_on_ant_lifetime_text_changed"]
-[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer/reproductionCheckBox" to="." method="_on_reproduction_check_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer/seedCheckBox" to="." method="_on_seed_check_box_pressed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/viewPheromonesCheckBox" to="." method="_on_view_pheromones_check_box_pressed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2/VSplitContainer/reproductionCheckBox" to="." method="_on_reproduction_check_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2/VSplitContainer/seedCheckBox" to="." method="_on_seed_check_box_pressed"]
 [connection signal="pressed" from="MarginContainerMap/VSplitContainer2/paintButton" to="." method="_on_paint_button_pressed"]
 [connection signal="value_changed" from="MarginContainerMap/VSplitContainer2/VSplitContainer/HSplitContainer/VSplitContainer/paintBrushSize" to="." method="_on_paint_brush_size_value_changed"]
 [connection signal="item_selected" from="MarginContainerMap/VSplitContainer2/VSplitContainer/mapDropDownMenu" to="." method="_on_map_drop_down_menu_item_selected"]

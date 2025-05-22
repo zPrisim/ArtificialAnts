@@ -28,14 +28,14 @@ func _input(event: InputEvent) -> void:
 			var cell : Vector2i = activeMapPreset.local_to_map(mouse_pos)
 			var width = Settings.mapPaintSize  
 
-			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and mouse_pos.x < 1280:
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and mouse_pos.x < 1280 and mouse_pos.y < 720:
 				Settings.paintMode = not Settings.paintMode
 				return  
 
-			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and mouse_pos.x < 1280:
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and mouse_pos.x < 1280 and mouse_pos.y < 720:
 				paint(cell, width)
 
-			if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and mouse_pos.x < 1280:
+			if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and mouse_pos.x < 1280 and mouse_pos.y < 720:
 				paint(cell, width)
 
 

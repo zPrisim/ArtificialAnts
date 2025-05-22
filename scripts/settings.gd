@@ -7,8 +7,10 @@ var defaultFoodSize := 1000
 
 
 var pheromoneSpawnTimeDelay : float = 0.3
-var pheromoneLifeTime : float = 30.0
+var pheromoneLifeTime : float = 45.0
 var pheromoneBaseValue : float = 10.0
+var pheromoneVisible := true
+
 
 var antLifeTime : int = 100000 # à changer
 var antSpawnCheckDelay : float = 1.0
@@ -18,7 +20,7 @@ var numberOfFoodToSpawnAnts : int = 10
 var seedChange := true
 var lastSeed := 0
 
-var mapPresetIndex := 5
+var mapPresetIndex := 0
 var mapPaintSize := 1.5
 var paintMode := true
 

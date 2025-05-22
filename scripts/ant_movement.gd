@@ -151,18 +151,16 @@ func avoidObstacles() -> Vector2:
 	return avoidForce
 
 func alignParallelToFrontWall():
-	if frontRayCast.is_colliding():
-		var normal = frontRayCast.get_collision_normal()
-		# calcul d' un vecteur parallèle à l'obstacle
-		var parallelDirection = normal.rotated(PI / 2)  # ratation à 90° pour obtenir une direction parallèle
-		velocity = (parallelDirection * maxSpeed).limit_length(maxSpeed) 
-		rotation = get_angle_to(parallelDirection) 
+	var normal = frontRayCast.get_collision_normal()
+	# calcul d' un vecteur parallèle à l'obstacle
+	var parallelDirection = normal.rotated(PI / 2)  # ratation à 90° pour obtenir une direction parallèle
+	velocity = (parallelDirection * maxSpeed).limit_length(maxSpeed) 
+	rotation = get_angle_to(parallelDirection) 
 
 
-
-	
 func move(delta : float):
-	alignParallelToFrontWall()
+	if frontRayCast.is_colliding():
+		alignParallelToFrontWall()
 	var randomAngle = randf() * TAU
 	var randomRadius = sqrt(randf())
 	var randomPoint = Vector2(randomRadius * cos(randomAngle), randomRadius * sin(randomAngle))

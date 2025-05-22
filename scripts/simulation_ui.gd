@@ -14,7 +14,7 @@ signal map_changed
 
 @onready var reproductionCheckBox = %reproductionCheckBox
 @onready var seedCheckBox = %seedCheckBox
-
+@onready var viewPheromonesCheckBox = %viewPheromonesCheckBox
 @onready var paintButton = %paintButton
 @onready var mapMenu = %mapDropDownMenu
 
@@ -35,7 +35,7 @@ func _ready():
 	reproductionCheckBox.button_pressed = Settings.antReproduction
 	seedCheckBox.button_pressed = Settings.seedChange
 	paintButton.button_pressed = Settings.isPaint
-	
+	viewPheromonesCheckBox.button_pressed = true
 	if Settings.mapPresetIndex != 0:
 		seedCheckBox.visible = false
 	
@@ -64,6 +64,7 @@ func _on_speed_slider_value_changed(value: float) -> void:
 	speedLabel.text = "Speed : " + str(value)
 	Engine.physics_ticks_per_second = int(value * 30);
 	Engine.time_scale = value;
+
 	
 
 func _on_map_drop_down_menu_item_selected(index: int) -> void:
@@ -92,6 +93,10 @@ func _on_reproduction_check_button_pressed() -> void:
 	Settings.antReproduction = !Settings.antReproduction
 	
 
+func _on_view_pheromones_check_box_pressed() -> void:
+	for p in get_tree().get_root().get_node("Simulation").pheromones:
+		p.visible = !p.visible
+	Settings.pheromoneVisible = ! Settings.pheromoneVisible
 
 func _on_paint_brush_size_value_changed(value: float) -> void:
 	paintBrushLabel.text = "Paint size : " + str(value)

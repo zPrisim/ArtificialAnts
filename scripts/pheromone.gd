@@ -19,6 +19,7 @@ var lifeTime := Settings.pheromoneLifeTime
 var lastPheromonePos := Vector2(0,0)
 
 func _ready():
+	visible = Settings.pheromoneVisible
 	add_to_group("pheromone")
 	if type == Settings.types.FOOD:
 		sprite.self_modulate = Color(255,0,0)
