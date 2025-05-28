@@ -40,7 +40,7 @@ func _ready():
 	antTimer = Timer.new()
 
 	antTimer.connect("timeout", _on_timer_check)	
-	
+	antTimer.set_timer_process_callback(Timer.TIMER_PROCESS_PHYSICS)
 	add_child(antTimer)
 
 	var instMapManager= mapManager.instantiate()
@@ -55,23 +55,6 @@ func _ready():
 			spawnFoodSource(mapSettings[i],Settings.defaultFoodSize)
 	
 	antTimer.start(antSpawnTime)
-	
-"""
-	instMapPheromoneHome = pheromoneMap.instantiate()
-	instMapPheromoneHome.type = Settings.types.HOME
-
-	add_child(instMapPheromoneHome)
-	
-	instMapPheromoneFood = pheromoneMap.instantiate()
-	instMapPheromoneFood.type = Settings.types.FOOD
-	add_child(instMapPheromoneFood)
-"""
-	#spawnFoodSource(Vector2(500,500), 25)
-	#spawnFoodSource(Vector2(50,50), 25)
-	#spawnFoodSource(Vector2(900,300), 25)
-	#spawnFoodSource(Vector2(1100,600), 25)
-
-	#ants_around_anthill(25.0,ant,antNumber,0.0)
 
 func _on_timer_check():
 	var numberToSpawn : int

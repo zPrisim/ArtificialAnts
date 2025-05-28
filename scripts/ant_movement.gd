@@ -33,7 +33,6 @@ var desiredSteeringForce
 var acceleration : Vector2
 
 var anthill: Node2D
-var pheromoneSpawnTimeDelay = 0.3
 var pheromoneSpawnTimer: Timer
 var lastPheromone : Pheromone
 
@@ -41,7 +40,7 @@ var hasFood: bool
 var hadFood: bool
 var lastFood : Food
 
-const TIME_TO_UPDATE = 0.05
+var TIME_TO_UPDATE = randf_range(0.04,0.08)
 var updateTimer : Timer
 
 var lifeTime = Settings.antLifeTime
@@ -60,18 +59,22 @@ func _ready():
 	updateTimer = Timer.new()
 	pheromoneSpawnTimer = Timer.new()
 
+	lifeTimer.one_shot = true
 	lifeTimer.connect("timeout", _on_timer_life)
 	updateTimer.connect("timeout", _on_timer_update)
 	pheromoneSpawnTimer.connect("timeout", _onTimerPheromoneSpawnTime)
+	lifeTimer.set_timer_process_callback(Timer.TIMER_PROCESS_PHYSICS)
+	pheromoneSpawnTimer.set_timer_process_callback(Timer.TIMER_PROCESS_PHYSICS)
+	updateTimer.set_timer_process_callback(Timer.TIMER_PROCESS_PHYSICS)
+
 
 	hasFood = false
 	add_child(lifeTimer)
 	add_child(pheromoneSpawnTimer)
 	add_child(updateTimer)
 	lifeTimer.start(lifeTime)
-	pheromoneSpawnTimer.start(pheromoneSpawnTimeDelay)
+	pheromoneSpawnTimer.start(Settings.pheromoneSpawnTimeDelay)
 	updateTimer.start(TIME_TO_UPDATE)
-
 func _on_timer_life():
 	get_parent().toBeDeadAnts.append(self)
 
@@ -142,19 +145,20 @@ func avoidObstacles() -> Vector2:
 	var avoidForce = Vector2.ZERO
 
 	if leftRayCast.is_colliding() and !rightRayCast.is_colliding():
-		avoidForce += transform.x * 0.1
+		avoidForce += transform.x * 0.5
 	elif rightRayCast.is_colliding() and !leftRayCast.is_colliding():
-		avoidForce -= transform.x * 0.1
+		avoidForce -= transform.x * 0.5
 	elif rightRayCast.is_colliding() and leftRayCast.is_colliding():
-		avoidForce -= transform.y * 0.1
+		avoidForce -= transform.y * 0.5
 
 	return avoidForce
 
 func alignParallelToFrontWall():
+		
 	var normal = frontRayCast.get_collision_normal()
 	# calcul d' un vecteur parallèle à l'obstacle
 	var parallelDirection = normal.rotated(PI / 2)  # ratation à 90° pour obtenir une direction parallèle
-	velocity = (parallelDirection * maxSpeed).limit_length(maxSpeed) 
+	velocity = (parallelDirection * maxSpeed).limit_length(maxSpeed/2) 
 	rotation = get_angle_to(parallelDirection) 
 
 
@@ -252,7 +256,7 @@ func handleFood(food : Food):
 		food.foodValue -= 1
 		lastFood = food
 		hasFood = true
-		pathStartPosition = global_position  # Démarrage du trajet de retour
+		pathStartPosition = global_position 
 	else:
 		get_parent().foods.erase(food)
 		get_parent().remove_child(food)
@@ -265,10 +269,10 @@ func handleAnthill(hill : Node2D):
 	hasFood = false
 	currentState = STATE.SEARCHING
 	hill.foodNumber += 1
-	pathStartPosition = global_position  # Démarrage du trajet vers nourriture
+	pathStartPosition = global_position  
 
 
-func TurnAround() -> void: # A modifier, les fourmis se bloquent
+func TurnAround() -> void: 
 	# Inverse la direction avec une force marquée
 	desiredDirection = -desiredDirection.normalized()
 	velocity = desiredDirection * maxSpeed * 0.5  # redémarre à moitié de la vitesse max

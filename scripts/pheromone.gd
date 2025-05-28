@@ -45,7 +45,8 @@ func _setup_timers():
 
 	deathTimer.connect("timeout", _on_timer_deathTime)
 	lifeTimer.connect("timeout", _on_timer_lifeTime)
-
+	deathTimer.set_timer_process_callback(Timer.TIMER_PROCESS_PHYSICS)
+	lifeTimer.set_timer_process_callback(Timer.TIMER_PROCESS_PHYSICS)
 	add_child(lifeTimer)
 	add_child(deathTimer)
 

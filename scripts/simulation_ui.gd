@@ -127,17 +127,18 @@ func _process(_delta: float) -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(1276, 0, 204.0, 720.0), Color.DIM_GRAY, true)	
-	
+	var mousePos = get_global_mouse_position()
 	if !Settings.isZoomed && Settings.isPaint:
-		var mousePos = get_global_mouse_position()
 		if !get_tree().get_root().get_node("Simulation").canPlaceFood:
 			var paintSize = Settings.mapPaintSize
 			var tileSize = 4
 
 			var radius = paintSize * tileSize
-			if mousePos.x < 1280 - radius:
+			if mousePos.x < 1280 - radius && mousePos.y < 720:
 				if Settings.paintMode:
 					draw_circle(mousePos, radius, Color("#8f563b"))
 					draw_circle(mousePos, radius, Color.BLACK, false)
 				else:
 					draw_circle(mousePos, radius, Color.WHITE, false)
+	if get_tree().get_root().get_node("Simulation").canPlaceFood && mousePos.x < 1280 - 25 && mousePos.y < 720:
+		draw_circle(mousePos, 25, Color.GREEN, true)

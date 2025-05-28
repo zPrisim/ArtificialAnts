@@ -8,7 +8,6 @@ func _ready():
 	add_to_group("antHill")
 	antHillCollision.shape.radius = 22
 
-
 func _draw():
 	draw_circle(Vector2(0,0),antHillCollision.shape.radius + 3,Color.BLUE,true)
 	

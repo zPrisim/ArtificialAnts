@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://dofy51hmfv30v"]
+[gd_scene load_steps=12 format=3 uid="uid://dofy51hmfv30v"]
 
 [ext_resource type="Script" uid="uid://sjew7gcdmvx4" path="res://scripts/ant_movement.gd" id="1_5tacl"]
 [ext_resource type="Texture2D" uid="uid://cm2fytsysmenj" path="res://assets/images/antSprites/ant0.png" id="2_ikowd"]
-[ext_resource type="Script" uid="uid://x8738j3ao3o5" path="res://scripts/antLabel.gd" id="3_acg2n"]
 [ext_resource type="Texture2D" uid="uid://b4j6cly2q73cp" path="res://assets/images/antSprites/ant1.png" id="3_dy442"]
 [ext_resource type="Script" uid="uid://drl21frpukxce" path="res://scripts/antenna.gd" id="4_8svqu"]
 [ext_resource type="Texture2D" uid="uid://dg0a72utfmo3u" path="res://assets/images/antSprites/ant2.png" id="4_vocod"]
@@ -53,24 +52,16 @@ script = ExtResource("1_5tacl")
 
 [node name="antSprite" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
+modulate = Color(0, 0, 0, 1)
 texture_filter = 1
 scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_hkm68")
 animation = &"movement"
-frame = 2
-frame_progress = 0.671871
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 scale = Vector2(0.75, 0.75)
 shape = SubResource("CapsuleShape2D_5tacl")
-
-[node name="Label" type="Label" parent="."]
-offset_left = -7.0
-offset_top = -11.0
-offset_right = 7.0
-offset_bottom = 12.0
-script = ExtResource("3_acg2n")
-metadata/_edit_use_anchors_ = true
 
 [node name="rightAntenna" type="Area2D" parent="."]
 position = Vector2(13.0093, -10)
@@ -104,11 +95,11 @@ shape = SubResource("CircleShape2D_acg2n")
 
 [node name="leftRayCast" type="RayCast2D" parent="."]
 rotation = 0.785398
-target_position = Vector2(-20, 0)
+target_position = Vector2(-10, 0)
 
 [node name="rightRayCast" type="RayCast2D" parent="."]
 rotation = -0.785398
-target_position = Vector2(20, 0)
+target_position = Vector2(10, 0)
 
 [node name="frontRayCast" type="RayCast2D" parent="."]
 scale = Vector2(0.5, 1)

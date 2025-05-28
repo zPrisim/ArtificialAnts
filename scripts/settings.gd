@@ -3,11 +3,11 @@ extends Node
 enum types {HOME, FOOD}
 
 var antHillPos := Vector2(640,360)
-var defaultFoodSize := 1000
+var defaultFoodSize := 2000
 
 
-var pheromoneSpawnTimeDelay : float = 0.3
-var pheromoneLifeTime : float = 45.0
+var pheromoneSpawnTimeDelay : float = 0.5
+var pheromoneLifeTime : float = 30.0
 var pheromoneBaseValue : float = 10.0
 var pheromoneVisible := true
 

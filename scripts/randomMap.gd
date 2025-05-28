@@ -6,8 +6,8 @@ var fnl := FastNoiseLite.new()
 
 func _ready() -> void:
 	if Settings.seedChange:
-		var x = randi_range(20,1260)
-		var y =  randi_range(20,700)
+		var x = randi_range(30,1250)
+		var y =  randi_range(30,690)
 		Settings.antHillPos = Vector2i(x, y)
 	initMapRandom()
 
