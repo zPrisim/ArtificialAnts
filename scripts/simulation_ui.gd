@@ -35,7 +35,7 @@ func _ready():
 	reproductionCheckBox.button_pressed = Settings.antReproduction
 	seedCheckBox.button_pressed = Settings.seedChange
 	paintButton.button_pressed = Settings.isPaint
-	viewPheromonesCheckBox.button_pressed = true
+	viewPheromonesCheckBox.button_pressed = Settings.pheromoneVisible
 	if Settings.mapPresetIndex != 0:
 		seedCheckBox.visible = false
 	
