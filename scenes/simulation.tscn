@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://b266q2tq83y1"]
+
+[ext_resource type="Script" uid="uid://cb7qkt38vuqi8" path="res://scripts/simulation.gd" id="1_ik8a0"]
+[ext_resource type="Script" uid="uid://docgtmjj4ffx7" path="res://scripts/ligne.gd" id="2_ljsjv"]
+[ext_resource type="Script" uid="uid://bdm7u62cd6tmu" path="res://scripts/anthill.gd" id="4_ljsjv"]
+[ext_resource type="Script" uid="uid://cwmnhsftqvjaw" path="res://scripts/ant_hill_food_number.gd" id="5_mwrr7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ik8a0"]
+
+[node name="Simulation" type="Node2D"]
+script = ExtResource("1_ik8a0")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+
+[node name="murHaut" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 1280, 0)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+script = ExtResource("2_ljsjv")
+
+[node name="murBas" type="Line2D" parent="."]
+points = PackedVector2Array(0, 720, 1280, 720)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+script = ExtResource("2_ljsjv")
+
+[node name="murGauche" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 0, 720)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+script = ExtResource("2_ljsjv")
+
+[node name="murDroite" type="Line2D" parent="."]
+points = PackedVector2Array(1280, 0, 1280, 720)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+script = ExtResource("2_ljsjv")
+
+[node name="antHill" type="StaticBody2D" parent="."]
+z_index = 2
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("4_ljsjv")
+
+[node name="antHillCollision" type="CollisionShape2D" parent="antHill"]
+shape = SubResource("CircleShape2D_ik8a0")
+
+[node name="antHillLabel" type="Label" parent="antHill"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -11.5
+offset_right = 0.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_mwrr7")

@@ -1,0 +1,121 @@
+[gd_scene load_steps=12 format=3 uid="uid://dofy51hmfv30v"]
+
+[ext_resource type="Script" uid="uid://sjew7gcdmvx4" path="res://scripts/ant_movement.gd" id="1_5tacl"]
+[ext_resource type="Texture2D" uid="uid://cm2fytsysmenj" path="res://assets/images/antSprites/ant0.png" id="2_ikowd"]
+[ext_resource type="Texture2D" uid="uid://b4j6cly2q73cp" path="res://assets/images/antSprites/ant1.png" id="3_dy442"]
+[ext_resource type="Script" uid="uid://drl21frpukxce" path="res://scripts/antenna.gd" id="4_8svqu"]
+[ext_resource type="Texture2D" uid="uid://dg0a72utfmo3u" path="res://assets/images/antSprites/ant2.png" id="4_vocod"]
+[ext_resource type="Script" uid="uid://b3bbpauotypwp" path="res://scripts/ant_vision.gd" id="5_hkm68"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hkm68"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ikowd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_dy442")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_vocod")
+}],
+"loop": true,
+"name": &"movement",
+"speed": 10.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5tacl"]
+radius = 3.99376
+height = 7.99991
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_acg2n"]
+radius = 6.9814
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ikowd"]
+radius = 51.0098
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dy442"]
+radius = 9.05539
+
+[node name="ant" type="CharacterBody2D"]
+light_mask = 0
+visibility_layer = 2
+z_index = 1
+collision_layer = 8
+collision_mask = 7
+motion_mode = 1
+slide_on_ceiling = false
+wall_min_slide_angle = 0.0
+platform_on_leave = 2
+platform_floor_layers = 4294901760
+script = ExtResource("1_5tacl")
+
+[node name="antSprite" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+modulate = Color(0, 0, 0, 1)
+texture_filter = 1
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_hkm68")
+animation = &"movement"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+scale = Vector2(0.75, 0.75)
+shape = SubResource("CapsuleShape2D_5tacl")
+
+[node name="rightAntenna" type="Area2D" parent="."]
+position = Vector2(13.0093, -10)
+collision_layer = 0
+collision_mask = 0
+monitorable = false
+script = ExtResource("4_8svqu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="rightAntenna"]
+shape = SubResource("CircleShape2D_acg2n")
+
+[node name="leftAntenna" type="Area2D" parent="."]
+position = Vector2(-12.9907, -10)
+collision_layer = 0
+collision_mask = 0
+monitorable = false
+script = ExtResource("4_8svqu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="leftAntenna"]
+shape = SubResource("CircleShape2D_acg2n")
+
+[node name="centre" type="Area2D" parent="."]
+position = Vector2(0.0186043, -19.0001)
+collision_layer = 0
+collision_mask = 0
+monitorable = false
+script = ExtResource("4_8svqu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="centre"]
+shape = SubResource("CircleShape2D_acg2n")
+
+[node name="leftRayCast" type="RayCast2D" parent="."]
+rotation = 0.785398
+target_position = Vector2(-10, 0)
+
+[node name="rightRayCast" type="RayCast2D" parent="."]
+rotation = -0.785398
+target_position = Vector2(10, 0)
+
+[node name="frontRayCast" type="RayCast2D" parent="."]
+scale = Vector2(0.5, 1)
+target_position = Vector2(0, -8)
+
+[node name="antVision" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 6
+script = ExtResource("5_hkm68")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="antVision"]
+shape = SubResource("CircleShape2D_ikowd")
+
+[node name="closePheromone" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="closePheromone"]
+shape = SubResource("CircleShape2D_dy442")

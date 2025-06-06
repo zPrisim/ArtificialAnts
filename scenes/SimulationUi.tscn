@@ -1,0 +1,363 @@
+[gd_scene load_steps=18 format=3 uid="uid://1bbtupm77dcp"]
+
+[ext_resource type="Texture2D" uid="uid://ci1crv5rcfohs" path="res://assets/images/Button.png" id="1_g5bxd"]
+[ext_resource type="Script" uid="uid://cpqjlcj0gkfgg" path="res://scripts/simulation_ui.gd" id="1_gl5vq"]
+[ext_resource type="Script" uid="uid://bmbqd44nsionn" path="res://scripts/fps.gd" id="3_bjuw2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gl5vq"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gl5vq"]
+texture = ExtResource("1_g5bxd")
+region_rect = Rect2(0, 0, 50, 20)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bjuw2"]
+texture = ExtResource("1_g5bxd")
+region_rect = Rect2(49, 0, 51, 20)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bjuw2"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bfyxp"]
+texture = ExtResource("1_g5bxd")
+region_rect = Rect2(0, 20, 50, 20)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_efncr"]
+texture = ExtResource("1_g5bxd")
+region_rect = Rect2(50, 20, 50, 20)
+
+[sub_resource type="LabelSettings" id="LabelSettings_bjuw2"]
+font_size = 14
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bfyxp"]
+
+[sub_resource type="Theme" id="Theme_bjuw2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_efncr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3g0mi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bjuw2"]
+draw_center = false
+border_width_top = 1
+border_width_bottom = 1
+expand_margin_left = 5.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_bfyxp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ff8jr"]
+
+[node name="SimulationUi" type="Control"]
+process_mode = 3
+top_level = true
+light_mask = 0
+z_index = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -720.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gl5vq")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 1280.0
+offset_right = 1480.0
+offset_bottom = 380.0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer"]
+layout_mode = 2
+dragging_enabled = false
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="VSplitContainerButtons" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="HSplitContainerAnt" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="antButton" type="Button" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt"]
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gl5vq")
+theme_override_styles/hover = SubResource("StyleBoxTexture_gl5vq")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_bjuw2")
+theme_override_styles/normal = SubResource("StyleBoxTexture_gl5vq")
+action_mode = 0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt"]
+layout_mode = 2
+collapsed = true
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="antHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/VSplitContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = 1.0
+value = 1.0
+rounded = true
+
+[node name="antLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/VSplitContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="HSplitContainerFood" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons"]
+layout_direction = 4
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="foodButton" type="Button" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood"]
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bjuw2")
+theme_override_styles/hover = SubResource("StyleBoxTexture_bfyxp")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_efncr")
+theme_override_styles/normal = SubResource("StyleBoxTexture_bfyxp")
+toggle_mode = true
+action_mode = 0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="foodHSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood/VSplitContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+min_value = 100.0
+max_value = 2000.0
+step = 100.0
+value = 100.0
+rounded = true
+
+[node name="foodLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "0"
+horizontal_alignment = 1
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="HSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="speedSlider" type="HSlider" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainer"]
+layout_mode = 2
+min_value = 0.25
+max_value = 3.0
+step = 0.25
+value = 1.0
+ticks_on_borders = true
+
+[node name="speedLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSplitContainerToFollow" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerToFollow"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "Ant to follow : "
+label_settings = SubResource("LabelSettings_bjuw2")
+
+[node name="antToFollow" type="LineEdit" parent="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerToFollow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bfyxp")
+context_menu_enabled = false
+emoji_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="HSplitContainerAntLifetime" type="HSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="antLifeTimeLabel" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "Ant lifetime : "
+label_settings = SubResource("LabelSettings_bjuw2")
+
+[node name="antLifetime" type="LineEdit" parent="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/focus = SubResource("StyleBoxEmpty_bfyxp")
+context_menu_enabled = false
+emoji_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="VSplitContainer2" type="VSplitContainer" parent="MarginContainer/VSplitContainer"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="viewPheromonesCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "View pheromones"
+
+[node name="VSplitContainer2" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer2"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="reproductionCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2/VSplitContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+theme = SubResource("Theme_bjuw2")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/focus = SubResource("StyleBoxEmpty_efncr")
+text = "Reproduction"
+icon_alignment = 2
+
+[node name="seedCheckBox" type="CheckBox" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2/VSplitContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3g0mi")
+button_pressed = true
+text = "Seed change"
+
+[node name="infos" type="Label" parent="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2"]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_bjuw2")
+label_settings = SubResource("LabelSettings_bfyxp")
+script = ExtResource("3_bjuw2")
+
+[node name="MarginContainerMap" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 1280.0
+offset_top = 578.0
+offset_right = 1480.0
+offset_bottom = 720.0
+
+[node name="VSplitContainer2" type="VSplitContainer" parent="MarginContainerMap"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="paintButton" type="Button" parent="MarginContainerMap/VSplitContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ff8jr")
+toggle_mode = true
+text = "Paint mode"
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainerMap/VSplitContainer2"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+drag_area_highlight_in_editor = true
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainerMap/VSplitContainer2/VSplitContainer"]
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="MarginContainerMap/VSplitContainer2/VSplitContainer/HSplitContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+dragging_enabled = false
+dragger_visibility = 2
+
+[node name="paintBrushSize" type="HSlider" parent="MarginContainerMap/VSplitContainer2/VSplitContainer/HSplitContainer/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 1
+min_value = 1.0
+max_value = 10.0
+step = 0.5
+value = 1.0
+scrollable = false
+
+[node name="paintBrushLabel" type="Label" parent="MarginContainerMap/VSplitContainer2/VSplitContainer/HSplitContainer/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="mapDropDownMenu" type="OptionButton" parent="MarginContainerMap/VSplitContainer2/VSplitContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 40)
+layout_mode = 2
+alignment = 1
+selected = 0
+item_count = 6
+popup/item_0/text = "random"
+popup/item_0/id = 0
+popup/item_1/text = "preset1"
+popup/item_1/id = 1
+popup/item_2/text = "preset2"
+popup/item_2/id = 2
+popup/item_3/text = "preset3"
+popup/item_3/id = 3
+popup/item_4/text = "preset4"
+popup/item_4/id = 4
+popup/item_5/text = "preset5"
+popup/item_5/id = 5
+
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/antButton" to="." method="_on_ant_button_pressed"]
+[connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerAnt/VSplitContainer/antHSlider" to="." method="_on_ant_h_slider_value_changed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood/foodButton" to="." method="_on_food_button_pressed"]
+[connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainerButtons/HSplitContainerFood/VSplitContainer/foodHSlider" to="." method="_on_food_h_slider_value_changed"]
+[connection signal="value_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainer/speedSlider" to="." method="_on_speed_slider_value_changed"]
+[connection signal="text_changed" from="MarginContainer/VSplitContainer/VSplitContainer/VSplitContainer/VSplitContainer/HSplitContainerToFollow/antToFollow" to="." method="_on_ant_to_follow_text_changed"]
+[connection signal="text_changed" from="MarginContainer/VSplitContainer/VSplitContainer/HSplitContainerAntLifetime/antLifetime" to="." method="_on_ant_lifetime_text_changed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/viewPheromonesCheckBox" to="." method="_on_view_pheromones_check_box_pressed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2/VSplitContainer/reproductionCheckBox" to="." method="_on_reproduction_check_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VSplitContainer/VSplitContainer2/VSplitContainer2/VSplitContainer/seedCheckBox" to="." method="_on_seed_check_box_pressed"]
+[connection signal="pressed" from="MarginContainerMap/VSplitContainer2/paintButton" to="." method="_on_paint_button_pressed"]
+[connection signal="value_changed" from="MarginContainerMap/VSplitContainer2/VSplitContainer/HSplitContainer/VSplitContainer/paintBrushSize" to="." method="_on_paint_brush_size_value_changed"]
+[connection signal="item_selected" from="MarginContainerMap/VSplitContainer2/VSplitContainer/mapDropDownMenu" to="." method="_on_map_drop_down_menu_item_selected"]
